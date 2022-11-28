@@ -1,0 +1,94 @@
+name: CMake Build Matrix
+
+on:
+  push:
+    paths-ignore:
+    - 'LICENSE'
+    - '**.md'
+    - '.*'
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+env:
+  CPU_CORES: 2 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+
+jobs:
+  build:
+    name: Build (${{ matrix.config.name }})
+    runs-on: ${{ matrix.config.os }}
+    container: ${{ matrix.config.container }}
+
+    strategy:
+      matrix:
+        config:
+        - {
+            os: 'windows-latest',
+            name: 'Windows',
+            container: null,
+            cmake_test_preset: 'windows-all',
+            cmake_build_preset: 'x86-windows-tests',
+            build_environment: 'call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsamd64_x86.bat"',
+            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/binaries/boost_1_80_0-msvc-14.3-32.exe',
+            boost_dir: 'C:\Program Files\Boost\boost_1_80_0',
+            shell: cmd
+          }
+        - {
+            os: 'ubuntu-latest',
+            name: 'Linux',
+            container: 'hun1er/ubuntu-gcc-clang-intel-boost:latest',
+            cmake_test_preset: 'linux-all',
+            cmake_build_preset: 'x86-linux-tests',
+            build_environment: '. /opt/intel/oneapi/setvars.sh ia32',
+            shell: bash
+          }
+
+    defaults:
+      run:
+        shell: ${{ matrix.config.shell }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Download boost c++ libraries
+      if: ${{ matrix.config.os == 'windows-latest' }}
+      run: |
+        $boost_url = "${{ matrix.config.boost_url }}"
+        $boost_exe = Split-Path $boost_url -Leaf
+        Invoke-WebRequest $boost_url -OutFile $boost_exe
+      shell: pwsh
+
+    - name: Install boost c++ libraries
+      if: ${{ matrix.config.os == 'windows-latest' }}
+      run: |
+        $boost_exe = Split-Path "${{ matrix.config.boost_url }}" -Leaf
+        $args = @("/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/SP-","/DIR=""${{ matrix.config.boost_dir }}""")
+        Start-Process -Filepath $boost_exe -ArgumentList $args
+      shell: pwsh
+
+    - name: Build
+      run: |
+        ${{ matrix.config.build_environment }}
+        cmake --preset ${{ matrix.config.cmake_build_preset }} -D PUBLISH_ARTIFACTS=ON
+        cmake --build --preset ${{ matrix.config.cmake_build_preset }} --parallel ${{ env.CPU_CORES }}
+
+    - name: Test
+      run: ctest --preset ${{ matrix.config.cmake_test_preset }} --parallel ${{ env.CPU_CORES }}
+
+    - name: Set artifacts archive name
+      run: |
+        os_name="${{ matrix.config.name }}"
+        echo "ARTIFACTS_ARCHIVE_NAME=$(find publish/* -maxdepth 0 -type d -printf '%f')_${os_name,,}" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: '${{ env.ARTIFACTS_ARCHIVE_NAME }}'
+        path: 'publish'

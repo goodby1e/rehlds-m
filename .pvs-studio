@@ -1,0 +1,3 @@
+exclude-path = */Microsoft Visual Studio/*
+exclude-path = */boost/*
+exclude-path = */libs/*
