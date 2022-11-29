@@ -10,8 +10,7 @@ on:
       - main
 
   pull_request:
-    branches:
-      - main
+    types: [opened, reopened, synchronize]
 
 env:
   CPU_CORES: 2 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners

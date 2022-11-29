@@ -2,6 +2,10 @@ name: SonarCloud
 
 on:
   push:
+    paths-ignore:
+    - 'LICENSE'
+    - '**.md'
+    - '.*'
     branches:
       - main
 
