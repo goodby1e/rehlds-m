@@ -84,7 +84,7 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
 # Visual Studio
 set(CMAKE_MSVC_RUNTIME_LIBRARY
-  "$<IF:$<OR:$<BOOL:${ENABLE_SANITIZERS}>,$<BOOL:${BUILD_UNIT_TESTS}>>,MultiThreadedDLL,MultiThreaded$<$<CONFIG:Debug>:Debug>>"
+  "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
 )
 set(CMAKE_VS_GLOBALS
   "RunCodeAnalysis=false"
