@@ -10,8 +10,7 @@ on:
       - main
 
   pull_request:
-    branches:
-      - main
+  pull_request_target:
 
 env:
   CPU_CORES: 2 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
