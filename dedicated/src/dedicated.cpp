@@ -65,24 +65,7 @@ namespace
 #ifdef _WIN32
         cmdline.set_param("-console");
 #endif
-
         cmdline.set_param("-steam");
-    }
-
-    void init_pidfile(const CommandLine& cmdline)
-    {
-        if (std::string pidfile{}; cmdline.find_param("-pidfile", pidfile) && (!pidfile.empty())) {
-            std::ofstream filestream{};
-            filestream.open(pidfile, std::ios_base::out | std::ios_base::trunc);
-
-            if (filestream.good() && filestream.is_open()) {
-                filestream << get_pid() << '\n';
-                filestream.close();
-            }
-            else {
-                TextConsole::print("Warning: unable to open PID file (%s)\n", pidfile);
-            }
-        }
     }
 
     void init_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
@@ -139,6 +122,22 @@ namespace
         return true;
     }
 
+    void process_param_pidfile(const CommandLine& cmdline)
+    {
+        if (std::string pidfile{}; cmdline.find_param("-pidfile", pidfile) && (!pidfile.empty())) {
+            std::ofstream filestream{};
+            filestream.open(pidfile, std::ios_base::out | std::ios_base::trunc);
+
+            if (filestream.good() && filestream.is_open()) {
+                filestream << get_pid() << '\n';
+                filestream.close();
+            }
+            else {
+                TextConsole::print("Warning: unable to open PID file (%s)\n", pidfile);
+            }
+        }
+    }
+
     /**
      * @brief Server loop.
      */
@@ -184,7 +183,7 @@ namespace rehlds::dedicated
 
         filesystem->mount();
         init_cmdline(cmdline);
-        init_pidfile(cmdline);
+        process_param_pidfile(cmdline);
         init_pingboost(cmdline, engine_module);
 
         auto* const launcher_factory = get_factory_this();
