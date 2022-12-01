@@ -68,39 +68,6 @@ namespace
         cmdline.set_param("-steam");
     }
 
-    void init_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
-    {
-        sys_sleep = &sleep_thread_millisecond;
-        net_sleep = engine_module.get_proc_address<NetSleep>("NET_Sleep_Timeout");
-
-        if (std::string pingboost{}; cmdline.find_param("-pingboost", pingboost) && (!pingboost.empty())) {
-            switch (std::strtol(pingboost.c_str(), nullptr, 10)) {
-#ifdef _WIN32
-            case 4: {
-                ::ULONG actual_resolution{};
-                auto* const handle_ntdll = load_module<::HMODULE>("ntdll.dll");
-                delay_execution = get_proc_address<NtDelayExecution>(handle_ntdll, "NtDelayExecution");
-                set_timer_resolution = get_proc_address<ZwSetTimerResolution>(handle_ntdll, "ZwSetTimerResolution");
-                set_timer_resolution(1, TRUE, &actual_resolution);
-                sys_sleep = &sleep_delay_execution;
-                break;
-            }
-#else
-            case 1: {
-                std::signal(SIGALRM, &sigalrm_handler);
-                sys_sleep = &sleep_timer;
-                break;
-            }
-            case 2: sys_sleep = &sleep_poll; break;
-            case 4: sys_sleep = &sleep_thread_microsecond; break;
-#endif
-            case 3: sys_sleep = &sleep_net; break;
-            case 5: sys_sleep = &thread_yield; break;
-            default: sys_sleep = &sleep_thread_millisecond; break;
-            }
-        }
-    }
-
     bool init_console(TextConsole& console)
     {
         if (!console.init()) {
@@ -134,6 +101,39 @@ namespace
             }
             else {
                 TextConsole::print("Warning: unable to open PID file (%s)\n", pidfile);
+            }
+        }
+    }
+
+    void process_param_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
+    {
+        sys_sleep = &sleep_thread_millisecond;
+        net_sleep = engine_module.get_proc_address<NetSleep>("NET_Sleep_Timeout");
+
+        if (std::string pingboost{}; cmdline.find_param("-pingboost", pingboost) && (!pingboost.empty())) {
+            switch (std::strtol(pingboost.c_str(), nullptr, 10)) {
+#ifdef _WIN32
+            case 4: {
+                ::ULONG actual_resolution{};
+                auto* const handle_ntdll = load_module<::HMODULE>("ntdll.dll");
+                delay_execution = get_proc_address<NtDelayExecution>(handle_ntdll, "NtDelayExecution");
+                set_timer_resolution = get_proc_address<ZwSetTimerResolution>(handle_ntdll, "ZwSetTimerResolution");
+                set_timer_resolution(1, TRUE, &actual_resolution);
+                sys_sleep = &sleep_delay_execution;
+                break;
+            }
+#else
+            case 1: {
+                std::signal(SIGALRM, &sigalrm_handler);
+                sys_sleep = &sleep_timer;
+                break;
+            }
+            case 2: sys_sleep = &sleep_poll; break;
+            case 4: sys_sleep = &sleep_thread_microsecond; break;
+#endif
+            case 3: sys_sleep = &sleep_net; break;
+            case 5: sys_sleep = &thread_yield; break;
+            default: sys_sleep = &sleep_thread_millisecond; break;
             }
         }
     }
@@ -184,7 +184,7 @@ namespace rehlds::dedicated
         filesystem->mount();
         init_cmdline(cmdline);
         process_param_pidfile(cmdline);
-        init_pingboost(cmdline, engine_module);
+        process_param_pingboost(cmdline, engine_module);
 
         auto* const launcher_factory = get_factory_this();
         auto* const filesystem_factory = filesystem_module.get_factory();
