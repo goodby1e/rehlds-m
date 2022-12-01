@@ -123,31 +123,33 @@ namespace rehlds::dedicated
         return count;
     }
 
-    bool CommandLine::find_param(std::string param) const
+    bool CommandLine::find_param(std::string regex_pattern) const
     {
-        boost::algorithm::trim(param);
+        boost::algorithm::trim(regex_pattern);
+        const std::regex regex{regex_pattern, std::regex_constants::icase};
         auto found = false;
 
         enumerate_params(current(),
-          [&param, &found](const std::smatch& match)
+          [&regex, &found](const std::smatch& match)
           {
               const auto& [param_name, param_values] = split_param(match.str());
-              return (found = boost::algorithm::iequals(param_name, param));
+              return (found = std::regex_match(param_name, regex));
           });
 
         return found;
     }
 
-    bool CommandLine::find_param(std::string param, std::string& values) const
+    bool CommandLine::find_param(std::string regex_pattern, std::string& values) const
     {
-        boost::algorithm::trim(param);
+        boost::algorithm::trim(regex_pattern);
+        const std::regex regex{regex_pattern, std::regex_constants::icase};
         auto found = false;
 
         enumerate_params(current(),
-          [&param, &values, &found](const std::smatch& match)
+          [&regex, &values, &found](const std::smatch& match)
           {
               const auto& [param_name, param_values] = split_param(match.str());
-              found = boost::algorithm::iequals(param_name, param);
+              found = std::regex_match(param_name, regex);
 
               if (found) {
                   values = param_values;

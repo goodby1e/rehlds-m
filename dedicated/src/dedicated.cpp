@@ -12,6 +12,7 @@
 #include "sleep.h"
 #include <cassert>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 
 #ifdef _WIN32
@@ -65,11 +66,31 @@ namespace
 #ifdef _WIN32
         cmdline.set_param("-console");
 #endif
-
         cmdline.set_param("-steam");
     }
 
-    void init_pidfile(const CommandLine& cmdline)
+    bool init_console(TextConsole& console)
+    {
+        if (!console.init()) {
+            TextConsole::print("Failed to initialize console.\n");
+            return false;
+        }
+
+        return true;
+    }
+
+    bool init_engine(IDedicatedServerApi* const engine_api, const char* const cmdline,
+      const CreateInterfaceFn launcher_factory, const CreateInterfaceFn filesystem_factory)
+    {
+        if (!engine_api->init(".", cmdline, launcher_factory, filesystem_factory)) {
+            TextConsole::print("Failed to initialize engine API.\n");
+            return false;
+        }
+
+        return true;
+    }
+
+    void process_param_pidfile(const CommandLine& cmdline)
     {
         if (std::string pidfile{}; cmdline.find_param("-pidfile", pidfile) && (!pidfile.empty())) {
             std::ofstream filestream{};
@@ -85,7 +106,22 @@ namespace
         }
     }
 
-    void init_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
+    void process_param_conclearlog(const CommandLine& cmdline)
+    {
+        if (cmdline.find_param("[-\\+]condebug") && cmdline.find_param("-conclearlog")) {
+#ifdef _WIN32
+            std::error_code error_code{};
+            std::filesystem::remove("qconsole.log", error_code);
+#else
+            if (std::string game{}; cmdline.find_param("-game", game) && (!game.empty())) {
+                std::error_code error_code{};
+                std::filesystem::remove(game + "/qconsole.log", error_code);
+            }
+#endif
+        }
+    }
+
+    void process_param_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
     {
         sys_sleep = &sleep_thread_millisecond;
         net_sleep = engine_module.get_proc_address<NetSleep>("NET_Sleep_Timeout");
@@ -116,27 +152,6 @@ namespace
             default: sys_sleep = &sleep_thread_millisecond; break;
             }
         }
-    }
-
-    bool init_console(TextConsole& console)
-    {
-        if (!console.init()) {
-            TextConsole::print("Failed to initialize console.\n");
-            return false;
-        }
-
-        return true;
-    }
-
-    bool init_engine(IDedicatedServerApi* const engine_api, const char* const cmdline,
-      const CreateInterfaceFn launcher_factory, const CreateInterfaceFn filesystem_factory)
-    {
-        if (!engine_api->init(".", cmdline, launcher_factory, filesystem_factory)) {
-            TextConsole::print("Failed to initialize engine API.\n");
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -184,8 +199,9 @@ namespace rehlds::dedicated
 
         filesystem->mount();
         init_cmdline(cmdline);
-        init_pidfile(cmdline);
-        init_pingboost(cmdline, engine_module);
+        process_param_pidfile(cmdline);
+        process_param_conclearlog(cmdline);
+        process_param_pingboost(cmdline, engine_module);
 
         auto* const launcher_factory = get_factory_this();
         auto* const filesystem_factory = filesystem_module.get_factory();
