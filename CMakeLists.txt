@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.23)
 # Project
 #------------------------------------------------------------------------------------------------
 project(        "rehlds-m"
-  VERSION       "1.0.3.0"
+  VERSION       "1.2.0.0"
   DESCRIPTION   "Reverse-engineered HLDS"
   HOMEPAGE_URL  "https://github.com/goodby1e/rehlds-m"
   LANGUAGES     "CXX"
