@@ -12,6 +12,7 @@
 #include "sleep.h"
 #include <cassert>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 
 #ifdef _WIN32
@@ -105,6 +106,21 @@ namespace
         }
     }
 
+    void process_param_conclearlog(const CommandLine& cmdline)
+    {
+        if (cmdline.find_param("[-\\+]condebug") && cmdline.find_param("-conclearlog")) {
+#ifdef _WIN32
+            std::error_code error_code{};
+            std::filesystem::remove("qconsole.log", error_code);
+#else
+            if (std::string game{}; cmdline.find_param("-game", game) && (!game.empty())) {
+                std::error_code error_code{};
+                std::filesystem::remove(game + "/qconsole.log", error_code);
+            }
+#endif
+        }
+    }
+
     void process_param_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
     {
         sys_sleep = &sleep_thread_millisecond;
@@ -184,6 +200,7 @@ namespace rehlds::dedicated
         filesystem->mount();
         init_cmdline(cmdline);
         process_param_pidfile(cmdline);
+        process_param_conclearlog(cmdline);
         process_param_pingboost(cmdline, engine_module);
 
         auto* const launcher_factory = get_factory_this();
