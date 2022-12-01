@@ -29,11 +29,6 @@ namespace
 
         return attributes;
     }
-
-    ::BOOL WINAPI console_handler_routine(const ::DWORD /* unused */)
-    {
-        return TRUE;
-    }
 }
 
 namespace rehlds::dedicated
@@ -69,10 +64,6 @@ namespace rehlds::dedicated
         handle_input = ::GetStdHandle(STD_INPUT_HANDLE);
         handle_output = ::GetStdHandle(STD_OUTPUT_HANDLE);
         set_title("GoldSrc Dedicated Server");
-
-        if (FALSE == ::SetConsoleCtrlHandler(&console_handler_routine, TRUE)) {
-            print("WARNING! TextConsoleWindows::init: Could not attach console hook.\n");
-        }
 
         return true;
     }
