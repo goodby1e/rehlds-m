@@ -11,6 +11,7 @@
 #include "console/text_console.h"
 #include "sleep.h"
 #include <cassert>
+#include <csignal>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -121,6 +122,13 @@ namespace
         }
     }
 
+    void process_param_ignoresigint(const CommandLine& cmdline)
+    {
+        if (cmdline.find_param("-ignoresigint") && (SIG_ERR == std::signal(SIGINT, SIG_IGN))) {
+            TextConsole::print("WARNING! -ignoresigint: Failed to set signal handler.\n");
+        }
+    }
+
     void process_param_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
     {
         sys_sleep = &sleep_thread_millisecond;
@@ -201,6 +209,7 @@ namespace rehlds::dedicated
         init_cmdline(cmdline);
         process_param_pidfile(cmdline);
         process_param_conclearlog(cmdline);
+        process_param_ignoresigint(cmdline);
         process_param_pingboost(cmdline, engine_module);
 
         auto* const launcher_factory = get_factory_this();
