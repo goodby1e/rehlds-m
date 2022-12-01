@@ -89,15 +89,15 @@ namespace rehlds::dedicated::test
         cmdline.create(args1.size(), args1.data());
         ASSERT_TRUE(cmdline.current().empty());
 
-        constexpr std::array<const char*, 2> args2 = {"hlds.exe", "param value"};
+        constexpr std::array args2 = {"hlds.exe", "param value"};
         cmdline.create(args2.size(), args2.data());
         ASSERT_TRUE(cmdline.current().empty());
 
-        constexpr std::array<const char*, 3> args3 = {"hlds.exe", " -game  ", "\tcstrike\r\n"};
+        constexpr std::array args3 = {"hlds.exe", " -game  ", "\tcstrike\r\n"};
         cmdline.create(args3.size(), args3.data());
         ASSERT_TRUE("-game cstrike" == cmdline.current());
 
-        constexpr std::array<const char*, 4> args4 = {"hlds.exe", " -game  ", "\tcstrike\r\n", "\f@hlds_params1\n"};
+        constexpr std::array args4 = {"hlds.exe", " -game  ", "\tcstrike\r\n", "\f@hlds_params1\n"};
         cmdline.create(args4.size(), args4.data());
         ASSERT_TRUE("-game cstrike +maxplayers 31 -num_edicts 2048 +map de_dust" == cmdline.current());
     }
@@ -113,15 +113,21 @@ namespace rehlds::dedicated::test
         found_param = cmdline.find_param("\t\t -gAmE \r\n");
         ASSERT_TRUE(found_param);
 
+        found_param = cmdline.find_param("-gam");
+        ASSERT_FALSE(found_param);
+
+        found_param = cmdline.find_param("-games");
+        ASSERT_FALSE(found_param);
+
         found_param = cmdline.find_param("\t\t -gAmE \r\n", values);
         ASSERT_TRUE(found_param);
         ASSERT_STRCASEEQ(values.c_str(), "cstrike");
 
-        found_param = cmdline.find_param("+sys_ticrate \r\n", values);
+        found_param = cmdline.find_param("\\+sys_ticrate \r\n", values);
         ASSERT_TRUE(found_param);
         ASSERT_TRUE("1000" == values);
 
-        found_param = cmdline.find_param("\t\t +maxplayers", values);
+        found_param = cmdline.find_param("\t\t \\+maxplayers", values);
         ASSERT_TRUE(found_param);
         ASSERT_TRUE("32" == values);
     }

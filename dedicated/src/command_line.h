@@ -51,12 +51,12 @@ namespace rehlds::dedicated
         /**
          * @brief Search for the parameter in the current commandline.
          */
-        [[nodiscard]] bool find_param(std::string param) const;
+        [[nodiscard]] bool find_param(std::string regex_pattern) const;
 
         /**
          * @brief Search for the parameter in the current commandline.
          */
-        bool find_param(std::string param, std::string& values) const;
+        bool find_param(std::string regex_pattern, std::string& values) const;
 
         /**
          * @brief Remove specified string (and any args attached to it) from command line.
