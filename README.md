@@ -1,1 +1,1 @@
-# rehlds-m
+# ReHLDS-M [![Download](https://badgen.net/github/release/goodby1e/rehlds-m)](https://github.com/goodby1e/rehlds-m/releases/latest) ![Platform](https://badgen.net/badge/platform/windows%20%7C%20linux/gray) [![License](https://img.shields.io/github/license/goodby1e/rehlds-m)](LICENSE)
