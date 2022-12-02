@@ -2,11 +2,12 @@
  *  ========== Copyright (c) Valve Corporation. All rights reserved. ==========
  */
 
+#include "console/text_console.h"
 #include "dedicated.h"
+#include <clocale>
 
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN // NOLINT(clang-diagnostic-unused-macros)
-  #include "console/text_console.h"
   #include <Windows.h>
   #include <WinSock2.h>
 
@@ -15,6 +16,11 @@
  */
 int main(const int argc, const char* const argv[])
 {
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    if (nullptr == std::setlocale(LC_ALL, ".UTF-8")) {
+        rehlds::dedicated::TextConsole::print("WARNING! Could not set locale.\n");
+    }
+
     constexpr auto version = MAKEWORD(2, 2);
     ::WSADATA data{};
 
@@ -37,6 +43,11 @@ int main(const int argc, const char* const argv[])
  */
 int main(const int argc, const char* const argv[])
 {
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    if (nullptr == std::setlocale(LC_ALL, "C.UTF-8")) {
+        rehlds::dedicated::TextConsole::print("WARNING! Could not set locale.\n");
+    }
+
     auto& cmdline = rehlds::dedicated::CommandLine::instance();
     cmdline.create(argc, argv);
 
