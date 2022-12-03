@@ -130,7 +130,7 @@ function(setup_target_link_options)
     target_link_options("${target_name}" PRIVATE
       /GUARD:NO             # Control flow guard protection
       /MACHINE:X86          # The target platform
-      /MANIFEST:NO          # Create assembly manifest
+      #/MANIFEST:NO         # Create assembly manifest
       /NXCOMPAT             # Compatible with the Windows Data Execution Prevention feature
       /SUBSYSTEM:CONSOLE    # Subsystem
       /WX                   # Treat linker warnings as errors
