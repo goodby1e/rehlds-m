@@ -45,7 +45,7 @@ namespace
         auto* const engine_api = engine_module.get_interface<IDedicatedServerApi>(INTERFACE_DEDICATED_SERVER_API);
 
         if (nullptr == engine_api) {
-            TextConsole::print("Failed to retrieve \"%s\" interface.\n", INTERFACE_DEDICATED_SERVER_API);
+            TextConsole::print("Failed to retrieve \"{}\" interface.\n", INTERFACE_DEDICATED_SERVER_API);
         }
 
         return engine_api;
@@ -56,7 +56,7 @@ namespace
         auto* const filesystem = filesystem_module.get_interface<IFileSystem>(INTERFACE_FILESYSTEM);
 
         if (nullptr == filesystem) {
-            TextConsole::print("Failed to retrieve \"%s\" interface.\n", INTERFACE_FILESYSTEM);
+            TextConsole::print("Failed to retrieve \"{}\" interface.\n", INTERFACE_FILESYSTEM);
         }
 
         return filesystem;
@@ -102,7 +102,7 @@ namespace
                 filestream.close();
             }
             else {
-                TextConsole::print("Warning: unable to open PID file (%s)\n", pidfile);
+                TextConsole::print("Warning: unable to open PID file ({})\n", pidfile);
             }
         }
     }

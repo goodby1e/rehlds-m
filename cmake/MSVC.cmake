@@ -5,10 +5,11 @@
 # setup_target_compile_options(target1 target2 ...)
 function(setup_target_compile_options)
   foreach(target_name ${ARGV})
-    target_compile_options("${target_name}" PRIVATE
-      /W4                     # Output warning level
-      /wd4706                 # Disable warning (assignment within conditional expression)
+    get_target_property(tgt_compile_options "${target_name}" COMPILE_OPTIONS)
+    list(FILTER tgt_compile_options INCLUDE REGEX "/[wW]([,0-9]|$)")
 
+    target_compile_options("${target_name}" PRIVATE
+      /wd4706                 # Disable warning (assignment within conditional expression)
       /arch:SSE2              # Minimum CPU architecture requirements
       /cgthreads${NCORES}     # Number of cl.exe threads to use for optimization and code generation
       /diagnostics:caret      # Diagnostics format: prints column and the indicated line of source
@@ -22,6 +23,10 @@ function(setup_target_compile_options)
       /source-charset:utf-8   # Character set of source files
       /validate-charset       # Validate UTF-8 files for only compatible characters
       /Zc:threadSafeInit-     # Thread-safe local static initialization
+
+      $<$<NOT:$<BOOL:${tgt_compile_options}>>:
+        /W4                   # Output warning level
+      >
 
       $<$<OR:$<BOOL:${MICROSOFT_CODE_ANALYSIS}>,$<BOOL:${CLANG_TIDY_CODE_ANALYSIS}>>:
         /analyze              # Enable code analysis

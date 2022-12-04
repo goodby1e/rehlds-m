@@ -5,11 +5,14 @@
 #include "common/interfaces/dedicated_exports.h"
 #include "common/interface.h"
 #include "common/platform.h"
-#include <cstdio>
+#include "console/text_console.h"
+
+using namespace rehlds::common;
+using namespace rehlds::dedicated;
 
 namespace
 {
-    class DedicatedExports final : public rehlds::common::IDedicatedExports
+    class DedicatedExports final : public IDedicatedExports
     {
       public:
         [[nodiscard]] static IDedicatedExports* instance()
@@ -27,10 +30,9 @@ namespace
     void DedicatedExports::print(const char* const text)
     {
         if ((text != nullptr) && (*text != '\0')) {
-            std::printf("%s", text);
-            std::fflush(stdout);
+            TextConsole::print(text);
         }
     }
 }
 
-EXPOSE_INTERFACE_FN(&DedicatedExports::instance, IDedicatedExports, rehlds::common::INTERFACE_DEDICATED_EXPORTS)
+EXPOSE_INTERFACE_FN(&DedicatedExports::instance, IDedicatedExports, INTERFACE_DEDICATED_EXPORTS)

@@ -25,7 +25,7 @@ int main(const int argc, const char* const argv[])
     ::WSADATA data{};
 
     if (const auto error = ::WSAStartup(version, &data); error != 0) {
-        rehlds::dedicated::TextConsole::print("WSAStartup failed with error: %d", error);
+        rehlds::dedicated::TextConsole::print("WSAStartup failed with error: {}", error);
         return -1;
     }
 

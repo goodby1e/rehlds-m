@@ -79,7 +79,7 @@ namespace
             buffer_stored = std::cout.rdbuf(tty.rdbuf());
         }
         else {
-            rehlds::dedicated::TextConsole::print("Unable to open TTY (%s) for output.\n", term_id);
+            rehlds::dedicated::TextConsole::print("Unable to open TTY ({}) for output.\n", term_id);
         }
     }
 

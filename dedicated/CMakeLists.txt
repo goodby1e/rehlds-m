@@ -44,6 +44,7 @@ target_include_directories(${PROJECT_NAME_INTERFACE} INTERFACE
 )
 
 target_link_libraries(${PROJECT_NAME_INTERFACE} INTERFACE
+  fmt::fmt
   Boost::boost
   ReHLDS::common
 
