@@ -135,6 +135,35 @@
       }
     },
     {
+      "displayName": " Code Analysis",
+      "name": "x86-windows-msvc-analysis",
+      "inherits": [ "x86-windows-msvc-debug" ],
+      "cacheVariables": {
+        "CLANG_TIDY_CODE_ANALYSIS": "ON",
+        "CPPCHECK_CODE_ANALYSIS": "ON",
+        "IWYU_ANALYSIS": "OFF",
+        "MICROSOFT_CODE_ANALYSIS": "ON",
+        "PVS_STUDIO_CODE_ANALYSIS": "ON"
+      }
+    },
+    {
+      "displayName": " Sanitize Address",
+      "name": "x86-windows-msvc-sanitize-address",
+      "inherits": [ "x86-windows-msvc-relwithdebinfo" ],
+      "cacheVariables": {
+        "SANITIZE_ADDRESS": "ON"
+      }
+    },
+    {
+      "displayName": " Unit Tests",
+      "name": "x86-windows-tests",
+      "inherits": [ "x86-windows-clang-release" ],
+      "cacheVariables": {
+        "BUILD_UNIT_TESTS": "ON",
+        "gtest_force_shared_crt": "ON"
+      }
+    },
+    {
       "hidden": true,
       "name": "linux",
       "inherits": [ "base" ],
@@ -264,18 +293,6 @@
     },
     {
       "displayName": " Code Analysis",
-      "name": "x86-windows-msvc-analysis",
-      "inherits": [ "x86-windows-msvc-debug" ],
-      "cacheVariables": {
-        "CLANG_TIDY_CODE_ANALYSIS": "ON",
-        "CPPCHECK_CODE_ANALYSIS": "ON",
-        "IWYU_ANALYSIS": "OFF",
-        "MICROSOFT_CODE_ANALYSIS": "ON",
-        "PVS_STUDIO_CODE_ANALYSIS": "ON"
-      }
-    },
-    {
-      "displayName": " Code Analysis",
       "name": "x86-linux-clang-analysis",
       "inherits": [ "x86-linux-clang-debug" ],
       "cacheVariables": {
@@ -284,14 +301,6 @@
         "IWYU_ANALYSIS": "OFF",
         "MICROSOFT_CODE_ANALYSIS": "ON",
         "PVS_STUDIO_CODE_ANALYSIS": "ON"
-      }
-    },
-    {
-      "displayName": " Sanitize Address",
-      "name": "x86-windows-msvc-sanitize-address",
-      "inherits": [ "x86-windows-msvc-relwithdebinfo" ],
-      "cacheVariables": {
-        "SANITIZE_ADDRESS": "ON"
       }
     },
     {
@@ -310,15 +319,6 @@
       "cacheVariables": {
         "USE_LINKER_GOLD": "OFF",
         "SANITIZE_UNDEFINED": "ON"
-      }
-    },
-    {
-      "displayName": " Unit Tests",
-      "name": "x86-windows-tests",
-      "inherits": [ "x86-windows-clang-release" ],
-      "cacheVariables": {
-        "BUILD_UNIT_TESTS": "ON",
-        "gtest_force_shared_crt": "ON"
       }
     },
     {
@@ -344,16 +344,6 @@
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
-      }
-    },
-    {
-      "name": "linux",
-      "inherits": [ "base" ],
-      "hidden": true,
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
       }
     },
     {
@@ -397,6 +387,37 @@
       "configurePreset": "x86-windows-clang-relwithdebinfo",
       "configuration": "RelWithDebInfo",
       "inherits": [ "windows" ]
+    },
+    {
+      "displayName": "Code Analysis",
+      "name": "x86-windows-msvc-analysis",
+      "configurePreset": "x86-windows-msvc-analysis",
+      "configuration": "Debug",
+      "inherits": [ "windows" ]
+    },
+    {
+      "displayName": "Sanitize Address",
+      "name": "x86-windows-msvc-sanitize-address",
+      "configurePreset": "x86-windows-msvc-sanitize-address",
+      "configuration": "RelWithDebInfo",
+      "inherits": [ "windows" ]
+    },
+    {
+      "displayName": "Unit Tests",
+      "name": "x86-windows-tests",
+      "configurePreset": "x86-windows-tests",
+      "configuration": "Release",
+      "inherits": [ "windows" ]
+    },
+    {
+      "name": "linux",
+      "inherits": [ "base" ],
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
     },
     {
       "displayName": "GCC Debug",
@@ -463,24 +484,10 @@
     },
     {
       "displayName": "Code Analysis",
-      "name": "x86-windows-msvc-analysis",
-      "configurePreset": "x86-windows-msvc-analysis",
-      "configuration": "Debug",
-      "inherits": [ "windows" ]
-    },
-    {
-      "displayName": "Code Analysis",
       "name": "x86-linux-clang-analysis",
       "configurePreset": "x86-linux-clang-analysis",
       "configuration": "Debug",
       "inherits": [ "linux" ]
-    },
-    {
-      "displayName": "Sanitize Address",
-      "name": "x86-windows-msvc-sanitize-address",
-      "configurePreset": "x86-windows-msvc-sanitize-address",
-      "configuration": "RelWithDebInfo",
-      "inherits": [ "windows" ]
     },
     {
       "displayName": "Sanitize Address",
@@ -495,13 +502,6 @@
       "configurePreset": "x86-linux-gcc-sanitize-undefined",
       "configuration": "RelWithDebInfo",
       "inherits": [ "linux" ]
-    },
-    {
-      "displayName": "Unit Tests",
-      "name": "x86-windows-tests",
-      "configurePreset": "x86-windows-tests",
-      "configuration": "Release",
-      "inherits": [ "windows" ]
     },
     {
       "displayName": "Unit Tests",
