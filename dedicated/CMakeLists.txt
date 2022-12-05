@@ -44,6 +44,7 @@ target_include_directories(${PROJECT_NAME_INTERFACE} INTERFACE
 )
 
 target_link_libraries(${PROJECT_NAME_INTERFACE} INTERFACE
+  fmt::fmt
   Boost::boost
   ReHLDS::common
 
@@ -76,9 +77,22 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 if(WIN32)
+  target_compile_definitions("${PROJECT_NAME}" PRIVATE
+    _CONSOLE
+  )
+
+  target_link_options(${PROJECT_NAME} PRIVATE
+    "/MANIFESTUAC:level='asInvoker' uiAccess='false'"
+    /MANIFEST
+  )
+
+  configure_file("hlds.exe.manifest.in" "${PROJECT_SOURCE_DIR}/hlds.exe.manifest" @ONLY)
   configure_file("resource.rc.in" "${PROJECT_SOURCE_DIR}/resource.rc" @ONLY)
-  target_sources(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/resource.rc")
-  target_compile_definitions("${PROJECT_NAME}" PRIVATE _CONSOLE)
+
+  target_sources(${PROJECT_NAME} PRIVATE
+    "${PROJECT_SOURCE_DIR}/hlds.exe.manifest"
+    "${PROJECT_SOURCE_DIR}/resource.rc"
+  )
 elseif(UNIX AND NOT APPLE)
   set_target_properties(${PROJECT_NAME} PROPERTIES
     SUFFIX "_linux"

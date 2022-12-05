@@ -5,11 +5,12 @@
 #pragma once
 
 #include "common/object_list.h"
+#include <fmt/core.h>
 #include <boost/circular_buffer.hpp>
-#include <boost/format.hpp>
 #include <array>
 #include <cstdio>
 #include <string>
+#include <utility>
 
 namespace rehlds::dedicated
 {
@@ -30,6 +31,11 @@ namespace rehlds::dedicated
         TextConsole& operator=(const TextConsole&) = delete;
         virtual ~TextConsole() = default;
 
+        [[nodiscard]] static TextConsole& instance();
+
+        template <typename... Args>
+        static int print(const std::string& format, Args&&... args);
+
         virtual bool init();
         virtual void terminate();
         virtual bool get_line(std::string& text) = 0;
@@ -39,12 +45,8 @@ namespace rehlds::dedicated
         virtual void update_status(bool force);
         void update_status();
 
-        [[nodiscard]] static TextConsole& instance();
         [[nodiscard]] bool initialized() const;
         [[nodiscard]] const std::string& console_text() const;
-
-        template <typename... Args>
-        static std::string::size_type print(const std::string& format, Args... args);
 
       protected:
         TextConsole() = default;
@@ -90,6 +92,13 @@ namespace rehlds::dedicated
         void process_multiple_command_matches(common::ObjectList& matches);
     };
 
+    template <typename... Args>
+    int TextConsole::print(const std::string& format, Args&&... args)
+    {
+        fmt::print(format.c_str(), std::forward<Args>(args)...);
+        return std::fflush(stdout);
+    }
+
     inline void TextConsole::update_status()
     {
         update_status(false);
@@ -103,14 +112,5 @@ namespace rehlds::dedicated
     [[nodiscard]] inline const std::string& TextConsole::console_text() const
     {
         return console_text_;
-    }
-
-    template <typename... Args>
-    std::string::size_type TextConsole::print(const std::string& format, Args... args)
-    {
-        const auto text = boost::str((boost::format(format.c_str()) % ... % args));
-        std::printf("%s", text.c_str());
-
-        return 0 == std::fflush(stdout) ? text.size() : 0;
     }
 }

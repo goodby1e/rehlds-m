@@ -12,7 +12,6 @@
 #include <cassert>
 #include <cctype>
 #include <chrono>
-#include <clocale>
 #include <cstring>
 #include <iostream>
 #include <utility>
@@ -21,7 +20,7 @@ using namespace rehlds::common;
 
 namespace
 {
-    rehlds::common::IDedicatedServerApi* engine_api{};
+    IDedicatedServerApi* engine_api{};
 
     std::pair<std::string_view, std::string_view> get_smallest_longest_commands(const ObjectList& commands)
     {
@@ -59,18 +58,8 @@ namespace rehlds::dedicated
         browse_line_ = 0;
         detail::system = get_engine_module().get_system();
 
-#ifdef _WIN32
-        constexpr auto* locale = ".UTF-8";
-#else
-        constexpr auto* locale = "C.UTF-8";
-#endif
-        // NOLINTNEXTLINE(concurrency-mt-unsafe)
-        if (nullptr == std::setlocale(LC_ALL, locale)) {
-            print("WARNING! TextConsole::init: Could not set locale.\n");
-        }
-
-        auto& engine_module = common::get_engine_module();
-        engine_api = engine_module.get_interface<common::IDedicatedServerApi>(common::INTERFACE_DEDICATED_SERVER_API);
+        auto& engine_module = get_engine_module();
+        engine_api = engine_module.get_interface<IDedicatedServerApi>(INTERFACE_DEDICATED_SERVER_API);
         initialized_ = engine_api != nullptr;
 
         return initialized_;

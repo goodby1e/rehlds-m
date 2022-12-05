@@ -223,7 +223,7 @@ namespace rehlds::dedicated
         std::ifstream file_stream{filename};
 
         if (!file_stream.good()) {
-            TextConsole::print("\n\nParameter file '%s' not found, skipping...", filename.c_str());
+            TextConsole::print("\n\nParameter file '{}' not found, skipping...", filename.c_str());
             return;
         }
 

@@ -508,4 +508,5 @@ out/
 # Miscellaneous
 .idea/
 *.snalyzerinfo
+dedicated/*.manifest
 resource.rc
