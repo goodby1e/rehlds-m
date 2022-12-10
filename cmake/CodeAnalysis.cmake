@@ -1,3 +1,10 @@
+set(CMAKE_C_INCLUDE_WHAT_YOU_USE "")
+set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "")
+set(CMAKE_C_CLANG_TIDY "")
+set(CMAKE_CXX_CLANG_TIDY "")
+set(CMAKE_C_CPPCHECK "")
+set(CMAKE_CXX_CPPCHECK "")
+
 # setup_target_code_analysis(target1 target2 ...)
 function(setup_target_code_analysis)
   #--------------------------------------------------------------------------------------------

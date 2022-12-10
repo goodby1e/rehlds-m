@@ -32,8 +32,6 @@ function(setup_unit_tests)
     add_executable("${UTEST_NAME}" ${UTEST_SOURCES})
 
     set_target_properties("${UTEST_NAME}" gmock gmock_main gtest gtest_main PROPERTIES
-      ENABLE_RTTI ON
-      ENABLE_EXCEPTIONS ON
       MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
       RUNTIME_OUTPUT_DIRECTORY "${UTEST_OUTPUT_DIR}"
       LIBRARY_OUTPUT_DIRECTORY "${UTEST_OUTPUT_DIR}"
@@ -41,7 +39,19 @@ function(setup_unit_tests)
       COMPILE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO "${UTEST_OUTPUT_DIR}"
     )
 
+    target_compile_options("${UTEST_NAME}" PRIVATE
+      -U_HAS_EXCEPTIONS                               # Undefine _HAS_EXCEPTIONS
+      $<IF:$<PLATFORM_ID:Windows>,/EHsc,-fexceptions> # Enable C++ exception handling
+
+      # Enable\Disable RTTI support
+      $<IF:$<BOOL:${ENABLE_RTTI}>,
+        $<IF:$<PLATFORM_ID:Windows>,/GR,-frtti>,
+        $<IF:$<PLATFORM_ID:Windows>,/GR-,-fno-rtti>
+      >
+    )
+
     target_link_libraries("${UTEST_NAME}" PRIVATE
+      GTest::gmock_main
       GTest::gtest_main
       ${UTEST_LIBRARIES}
     )
@@ -51,10 +61,6 @@ function(setup_unit_tests)
     target_compile_options(gmock_main PRIVATE $<IF:$<PLATFORM_ID:Windows>,/w,-w>)
     target_compile_options(gtest PRIVATE $<IF:$<PLATFORM_ID:Windows>,/w,-w>)
     target_compile_options(gtest_main PRIVATE $<IF:$<PLATFORM_ID:Windows>,/w,-w>)
-
-    setup_target_compile_definitions("${UTEST_NAME}")
-    setup_target_compile_options("${UTEST_NAME}")
-    setup_target_link_options("${UTEST_NAME}")
 
     add_test(
       NAME "${UTEST_NAME}"

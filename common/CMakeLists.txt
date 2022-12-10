@@ -39,8 +39,6 @@ target_sources(${PROJECT_NAME} INTERFACE
   "src/system.cpp"
 )
 
-if(BUILD_UNIT_TESTS)
-  setup_unit_tests("${PROJECT_NAME}_tests" LIBRARIES ReHLDS::${PROJECT_NAME} SOURCES
-    "test/test_object_list.cpp"
-  )
-endif()
+setup_unit_tests("${PROJECT_NAME}_tests" LIBRARIES ReHLDS::${PROJECT_NAME} SOURCES
+  "test/test_object_list.cpp"
+)

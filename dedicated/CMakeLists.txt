@@ -77,10 +77,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 if(WIN32)
-  target_compile_definitions("${PROJECT_NAME}" PRIVATE
-    _CONSOLE
-  )
-
   target_link_options(${PROJECT_NAME} PRIVATE
     "/MANIFESTUAC:level='asInvoker' uiAccess='false'"
     /MANIFEST
@@ -126,13 +122,7 @@ elseif(UNIX AND NOT APPLE)
   endif()
 endif()
 
-setup_target_compile_definitions(${PROJECT_NAME})
+setup_target_properties(${PROJECT_NAME})
 setup_target_compile_options(${PROJECT_NAME})
-setup_target_link_options(${PROJECT_NAME})
 setup_target_code_analysis(${PROJECT_NAME})
-
-if(BUILD_UNIT_TESTS)
-  setup_unit_tests("${PROJECT_NAME}_tests" LIBRARIES ${PROJECT_NAME_INTERFACE} SOURCES
-    "test/test_command_line.cpp"
-  )
-endif()
+setup_unit_tests("${PROJECT_NAME}_tests" LIBRARIES ${PROJECT_NAME_INTERFACE} SOURCES "test/test_command_line.cpp")

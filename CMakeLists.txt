@@ -32,6 +32,8 @@ project(        "rehlds-m"
 #------------------------------------------------------------------------------------------------
 # Options
 #------------------------------------------------------------------------------------------------
+option(ENABLE_RTTI              "Enable RTTI support"                                       OFF )
+option(ENABLE_EXCEPTIONS        "Enable exception handling table generation"                OFF )
 option(CLANG_TIDY_CODE_ANALYSIS "Enable Clang-Tidy code analysis"                           OFF )
 option(CPPCHECK_CODE_ANALYSIS   "Enable Cppcheck code analysis"                             OFF )
 option(IWYU_ANALYSIS            "Enable Include What You Use analysis"                      OFF )
@@ -77,30 +79,17 @@ FetchContent_Declare(
   GIT_TAG        release-1.12.1
 )
 
-include(Config)
-include(CodeAnalysis)
-include(CompileDefinitions)
-
 if(BUILD_UNIT_TESTS)
   include(CTest)
-  include(UnitTests)
 endif()
 
-if(WIN32 AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # ClangCL.cmake
-  include(ClangCL)
-else()
-  # MSVC.cmake GNU.cmake, Clang.cmake, Intel.cmake
-  include(${CMAKE_CXX_COMPILER_ID})
-endif()
+include(Config)
+include(UnitTests)
+include(CodeAnalysis)
+include(${CMAKE_HOST_SYSTEM_NAME})
 
 set(FMT_SYSTEM_HEADERS ON)
 FetchContent_MakeAvailable(FmtLib)
-
-target_compile_options(fmt PRIVATE $<IF:$<PLATFORM_ID:Windows>,/w,-w>)
-setup_target_compile_definitions(fmt)
-setup_target_compile_options(fmt)
-setup_target_link_options(fmt)
 
 add_subdirectory("common")
 add_subdirectory("dedicated")
