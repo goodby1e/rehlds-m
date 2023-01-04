@@ -6,7 +6,6 @@
 #include "common/hlds_module.h"
 #include "common/interfaces/dedicated_serverapi.h"
 #include "strtools/string.h"
-#include <boost/format.hpp>
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -85,10 +84,10 @@ namespace rehlds::dedicated
         std::array<char, 32> map_name{};
         engine_api->update_status(&fps, &active_players, &maximum_players, map_name.data());
 
-        const auto status = boost::format("FPS: %.1f | Players: %d/%d | Map: %s") % fps % active_players %
-                            maximum_players % map_name.data();
+        const auto status = strformat::format(
+          "FPS: {:.1f} | Players: {:d}/{:d} | Map: {}", fps, active_players, maximum_players, map_name.data());
 
-        set_status(status.str());
+        set_status(status);
         time_last_update = std::chrono::system_clock::now();
     }
 
@@ -287,7 +286,6 @@ namespace rehlds::dedicated
         delete_typed_line();
         std::cout << '\n';
 
-        const auto& format = (boost::format("%%-%1%%2%") % longest.length() % "s ").str();
         std::string common{smallest};
         common = strtools::lower(common);
 
@@ -304,7 +302,7 @@ namespace rehlds::dedicated
 
             std::string command{static_cast<const char*>(match)};
             command = strtools::lower(command);
-            std::cout << (boost::format(format) % command).str();
+            std::cout << strformat::format("{:<{}}  ", command, longest.length());
 
             const auto& [mismatch1, mismatch2] = std::mismatch(common.cbegin(), common.cend(), command.cbegin());
             common.erase(mismatch1, common.cend());

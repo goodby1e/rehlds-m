@@ -45,7 +45,7 @@ target_include_directories(${PROJECT_NAME_INTERFACE} INTERFACE
 
 target_link_libraries(${PROJECT_NAME_INTERFACE} INTERFACE
   StrTools::strtools
-  fmt::fmt
+  StrFormat::strformat
   Boost::boost
   ReHLDS::common
 

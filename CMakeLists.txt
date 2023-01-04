@@ -62,12 +62,6 @@ get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 string(SUBSTRING "${GIT_SHA1}" 0 7 GIT_SHA1_TRUNC)
 
 FetchContent_Declare(
-  FmtLib
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG        9.1.0
-)
-
-FetchContent_Declare(
   PVS_CMakeModule
   GIT_REPOSITORY https://github.com/viva64/pvs-studio-cmake-module.git
   GIT_TAG        master
@@ -88,9 +82,7 @@ include(UnitTests)
 include(CodeAnalysis)
 include(${CMAKE_HOST_SYSTEM_NAME})
 
-set(FMT_SYSTEM_HEADERS ON)
-FetchContent_MakeAvailable(FmtLib)
-
 add_subdirectory("libs/strtools")
+add_subdirectory("libs/strformat")
 add_subdirectory("common")
 add_subdirectory("dedicated")

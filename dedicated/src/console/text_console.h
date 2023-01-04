@@ -5,7 +5,7 @@
 #pragma once
 
 #include "common/object_list.h"
-#include <fmt/core.h>
+#include "strformat/format.h"
 #include <boost/circular_buffer.hpp>
 #include <array>
 #include <cstdio>
@@ -34,7 +34,7 @@ namespace rehlds::dedicated
         [[nodiscard]] static TextConsole& instance();
 
         template <typename... Args>
-        static int print(const std::string& format, Args&&... args);
+        static int print(std::string format, Args&&... args);
 
         virtual bool init();
         virtual void terminate();
@@ -93,9 +93,9 @@ namespace rehlds::dedicated
     };
 
     template <typename... Args>
-    int TextConsole::print(const std::string& format, Args&&... args)
+    int TextConsole::print(std::string format, Args&&... args)
     {
-        fmt::print(format.c_str(), std::forward<Args>(args)...);
+        strformat::print(std::move(format), std::forward<Args>(args)...);
         return std::fflush(stdout);
     }
 
