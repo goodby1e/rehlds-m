@@ -124,7 +124,7 @@ function(setup_target_code_analysis)
         OUTPUT HIDE_HELP MODE "GA:1,2,3+OP:1,2,3"
         PLATFORM "${PLATFORM_TYPE}" CONFIG "${CMAKE_SOURCE_DIR}/.pvs-studio"
         ARGS --threads ${NCORES}
-        #CONVERTER_ARGS --excludedCodes V1042
+        CONVERTER_ARGS --excludedCodes V1042
       )
     endforeach()
   endif()

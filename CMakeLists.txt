@@ -91,5 +91,6 @@ include(${CMAKE_HOST_SYSTEM_NAME})
 set(FMT_SYSTEM_HEADERS ON)
 FetchContent_MakeAvailable(FmtLib)
 
+add_subdirectory("libs/strtools")
 add_subdirectory("common")
 add_subdirectory("dedicated")

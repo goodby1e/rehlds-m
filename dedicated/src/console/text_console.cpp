@@ -5,7 +5,7 @@
 #include "console/text_console.h"
 #include "common/hlds_module.h"
 #include "common/interfaces/dedicated_serverapi.h"
-#include <boost/algorithm/string.hpp>
+#include "strtools/string.h"
 #include <boost/format.hpp>
 #include <algorithm>
 #include <array>
@@ -289,7 +289,7 @@ namespace rehlds::dedicated
 
         const auto& format = (boost::format("%%-%1%%2%") % longest.length() % "s ").str();
         std::string common{smallest};
-        boost::algorithm::to_lower(common);
+        common = strtools::lower(common);
 
         const auto total_columns = static_cast<std::size_t>(width() - 1) / (longest.length() + 1);
         std::size_t current_column = 0;
@@ -303,7 +303,7 @@ namespace rehlds::dedicated
             }
 
             std::string command{static_cast<const char*>(match)};
-            boost::algorithm::to_lower(command);
+            command = strtools::lower(command);
             std::cout << (boost::format(format) % command).str();
 
             const auto& [mismatch1, mismatch2] = std::mismatch(common.cbegin(), common.cend(), command.cbegin());

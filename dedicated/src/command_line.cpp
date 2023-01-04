@@ -4,8 +4,8 @@
 
 #include "command_line.h"
 #include "console/text_console.h"
+#include "strtools/string.h"
 #include <type_traits>
-#include <boost/algorithm/string.hpp>
 #include <cassert>
 #include <fstream>
 #include <functional>
@@ -23,7 +23,7 @@ namespace
 
     void append_cmdline(std::string& cmdline, std::string param)
     {
-        boost::algorithm::trim(param);
+        param = strtools::trim(param);
 
         if (!param.empty()) {
             if (!cmdline.empty()) {
@@ -38,14 +38,14 @@ namespace
     {
         std::string name{};
         std::string values{};
-        boost::algorithm::trim(param);
+        param = strtools::trim(param);
 
         if (is_valid_param(param)) {
             if ('@' == param.front()) {
                 name = param.front();
                 values = param.substr(1);
             }
-            else if (const auto space_pos = param.find_first_of(" \f\n\r\t\v"); space_pos == std::string::npos) {
+            else if (const auto space_pos = param.find_first_of(" \f\n\r\t\v"); std::string::npos == space_pos) {
                 name = std::move(param);
             }
             else {
@@ -54,8 +54,8 @@ namespace
             }
         }
 
-        boost::algorithm::trim(name);
-        boost::algorithm::trim(values);
+        name = strtools::trim(name);
+        values = strtools::trim(values);
 
         return std::make_tuple(std::move(name), std::move(values));
     }
@@ -63,10 +63,10 @@ namespace
     template <typename Callback, typename... Args>
     void enumerate_params(std::string cmdline, Callback&& func, Args&&... args)
     {
-        boost::trim(cmdline);
-        boost::replace_all(cmdline, "\f", "");
-        boost::replace_all(cmdline, "\r", "");
-        boost::replace_all(cmdline, "\n", " ");
+        cmdline = strtools::trim(cmdline);
+        cmdline = strtools::replace(cmdline, "\f", strtools::EMPTY);
+        cmdline = strtools::replace(cmdline, "\r", strtools::EMPTY);
+        cmdline = strtools::replace(cmdline, "\n", " ");
 
         const std::regex cmdline_regex{R"((^|\s+)[-+@].+?(?=\s+[-+@]|$))"};
         const auto& cmdline_begin = std::sregex_iterator(cmdline.begin(), cmdline.end(), cmdline_regex);
@@ -125,7 +125,7 @@ namespace rehlds::dedicated
 
     bool CommandLine::find_param(std::string regex_pattern) const
     {
-        boost::algorithm::trim(regex_pattern);
+        regex_pattern = strtools::trim(regex_pattern);
         const std::regex regex{regex_pattern, std::regex_constants::icase};
         auto found = false;
 
@@ -141,7 +141,7 @@ namespace rehlds::dedicated
 
     bool CommandLine::find_param(std::string regex_pattern, std::string& values) const
     {
-        boost::algorithm::trim(regex_pattern);
+        regex_pattern = strtools::trim(regex_pattern);
         const std::regex regex{regex_pattern, std::regex_constants::icase};
         auto found = false;
 
@@ -163,7 +163,7 @@ namespace rehlds::dedicated
 
     void CommandLine::remove_param(std::string param)
     {
-        boost::algorithm::trim(param);
+        param = strtools::trim(param);
         bool found{};
 
         do {
@@ -171,7 +171,7 @@ namespace rehlds::dedicated
             enumerate_params(current(),
               [this, &found, &param](const std::smatch& match)
               {
-                  if (const auto& [name, values] = split_param(match.str()); boost::algorithm::iequals(name, param)) {
+                  if (const auto& [name, values] = split_param(match.str()); strtools::equal_ignore_case(name, param)) {
                       const auto start_post = static_cast<std::string::size_type>(match.position());
                       const auto count = static_cast<std::string::size_type>(match.length());
                       found = (start_post != std::string::npos) && (count != std::string::npos);
@@ -187,7 +187,7 @@ namespace rehlds::dedicated
 
     void CommandLine::set_param(std::string param)
     {
-        boost::trim(param);
+        param = strtools::trim(param);
 
         if (is_valid_param(param)) {
             const auto& [param_name, param_values] = split_param(param);
@@ -198,7 +198,7 @@ namespace rehlds::dedicated
 
     void CommandLine::set_param(std::string param, std::string values)
     {
-        boost::trim(param);
+        param = strtools::trim(param);
 
         if (is_valid_param(param)) {
             const auto& [param_name, param_values] = split_param(param);
