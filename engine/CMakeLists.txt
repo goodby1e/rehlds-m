@@ -3,7 +3,6 @@
 #--------------------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.23)
-find_package(Boost 1.80.0 REQUIRED)
 
 set(PROJECT_NAME        "engine")
 set(PROJECT_DESCRIPTION "HLDS Engine")

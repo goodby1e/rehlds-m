@@ -23,12 +23,7 @@
       },
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "BOOST_ENABLE_CMAKE": "ON",
-        "Boost_USE_DEBUG_LIBS": "OFF",
-        "Boost_USE_MULTITHREADED": "ON",
-        "Boost_USE_RELEASE_LIBS": "ON",
-        "Boost_USE_STATIC_LIBS": "ON"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
@@ -38,10 +33,6 @@
       "cacheVariables": {
         "CMAKE_C_SIMULATE_ID": "MSVC",
         "CMAKE_CXX_SIMULATE_ID": "MSVC"
-      },
-      "environment": {
-        "BOOST_ROOT": "$env{PROGRAMFILES}\\Boost\\boost_1_80_0",
-        "BOOST_LIBRARYDIR": "$env{PROGRAMFILES}\\Boost\\boost_1_80_0\\lib32-msvc-14.3"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {

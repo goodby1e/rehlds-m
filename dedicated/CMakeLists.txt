@@ -4,10 +4,11 @@
 
 cmake_minimum_required(VERSION 3.23)
 
-project("hlds" DESCRIPTION "HLDS Launcher")
-find_package(Boost 1.80.0 REQUIRED)
+set(PROJECT_NAME            "hlds")
+set(PROJECT_DESCRIPTION     "HLDS Launcher")
+set(PROJECT_NAME_INTERFACE  "${PROJECT_NAME}_interface")
 
-set(PROJECT_NAME_INTERFACE "${PROJECT_NAME}_interface")
+project(${PROJECT_NAME} DESCRIPTION "${PROJECT_DESCRIPTION}")
 add_library(${PROJECT_NAME_INTERFACE} INTERFACE)
 
 target_sources(${PROJECT_NAME_INTERFACE} INTERFACE
@@ -19,11 +20,6 @@ target_sources(${PROJECT_NAME_INTERFACE} INTERFACE
   "src/dedicated.cpp"
   "src/dedicated.h"
   "src/sleep.h"
-
-  # Boost
-  $<$<NOT:$<BOOL:$<TARGET_PROPERTY:ENABLE_EXCEPTIONS>>>:
-    "src/throw_exception.cpp"
-  >
 
   # Platform Windows
   $<$<PLATFORM_ID:Windows>:
@@ -46,7 +42,6 @@ target_include_directories(${PROJECT_NAME_INTERFACE} INTERFACE
 target_link_libraries(${PROJECT_NAME_INTERFACE} INTERFACE
   StrTools::strtools
   StrFormat::strformat
-  Boost::boost
   ReHLDS::common
 
   # Windows

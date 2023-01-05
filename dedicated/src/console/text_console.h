@@ -6,19 +6,14 @@
 
 #include "common/object_list.h"
 #include "strformat/format.h"
-#include <boost/circular_buffer.hpp>
 #include <array>
 #include <cstdio>
+#include <deque>
 #include <string>
 #include <utility>
 
 namespace rehlds::dedicated
 {
-    /**
-     * @brief The maximum number of lines stored in the input history.
-     */
-    constexpr auto MAX_BUFFER_LINES = 255;
-
     /**
      * @brief Text console wrapper.
      */
@@ -65,7 +60,7 @@ namespace rehlds::dedicated
         void receive_text(std::string_view text);
 
       private:
-        using LineBuffer = boost::circular_buffer<std::string>;
+        using LineBuffer = std::deque<std::string>;
 
         /* Is the console already initialized? */
         bool initialized_{};
@@ -77,7 +72,7 @@ namespace rehlds::dedicated
         std::string saved_console_text_{};
 
         /* Command buffer last commands. */
-        LineBuffer line_buffer_{MAX_BUFFER_LINES};
+        LineBuffer line_buffer_{};
 
         /* Current buffer line for up/down arrow. */
         LineBuffer::size_type browse_line_{};

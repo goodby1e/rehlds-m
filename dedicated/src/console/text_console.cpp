@@ -19,6 +19,7 @@ using namespace rehlds::common;
 
 namespace
 {
+    constexpr auto MAX_BUFFER_LINES = 255;
     IDedicatedServerApi* engine_api{};
 
     std::pair<std::string_view, std::string_view> get_smallest_longest_commands(const ObjectList& commands)
@@ -107,7 +108,11 @@ namespace rehlds::dedicated
         std::cout << '\n';
 
         // Cache line in buffer, but only if it's not a duplicate of the previous line.
-        if ((!console_text_.empty()) && (line_buffer_.back() != console_text_)) {
+        if ((!console_text_.empty()) && (line_buffer_.empty() || (line_buffer_.back() != console_text_))) {
+            if (MAX_BUFFER_LINES == line_buffer_.size()) {
+                line_buffer_.pop_front();
+            }
+
             line_buffer_.push_back(console_text_);
         }
 
