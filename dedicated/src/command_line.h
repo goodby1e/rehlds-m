@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "cpputils/singleton_holder.h"
 #include <regex>
 #include <string>
 #include <utility>
@@ -21,8 +22,7 @@ namespace rehlds::dedicated
          */
         [[nodiscard]] static CommandLine& instance()
         {
-            static CommandLine instance{};
-            return instance;
+            return cpputils::SingletonHolder<CommandLine>::get_instance();
         }
 
         /**
@@ -85,9 +85,6 @@ namespace rehlds::dedicated
       private:
         /* Actual command line. */
         std::string cmdline_{};
-
-        /* Default constructor. */
-        CommandLine() = default;
 
         /* Callback function that is called for each parameter in the command line. */
         void build_cmdline(const std::smatch& match);

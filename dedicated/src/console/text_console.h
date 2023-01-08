@@ -5,7 +5,7 @@
 #pragma once
 
 #include "common/object_list.h"
-#include "strformat/format.h"
+#include "cpputils/format.h"
 #include <array>
 #include <cstdio>
 #include <deque>
@@ -20,6 +20,7 @@ namespace rehlds::dedicated
     class TextConsole
     {
       public:
+        TextConsole() = default;
         TextConsole(TextConsole&&) = delete;
         TextConsole(const TextConsole&) = delete;
         TextConsole& operator=(TextConsole&&) = delete;
@@ -44,7 +45,6 @@ namespace rehlds::dedicated
         [[nodiscard]] const std::string& console_text() const;
 
       protected:
-        TextConsole() = default;
         void delete_typed_line();
         void receive_newline();
         void receive_backspace();
@@ -90,7 +90,7 @@ namespace rehlds::dedicated
     template <typename... Args>
     int TextConsole::print(std::string format, Args&&... args)
     {
-        strformat::print(std::move(format), std::forward<Args>(args)...);
+        cpputils::print(std::move(format), std::forward<Args>(args)...);
         return std::fflush(stdout);
     }
 

@@ -9,16 +9,13 @@
 #include "common/interfaces/filesystem.h"
 #include "common/platform.h"
 #include "console/text_console.h"
+#include "cpputils/system.h"
 #include "sleep.h"
 #include <cassert>
 #include <csignal>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-
-#ifdef _WIN32
-  #include "common/system.h"
-#endif
 
 using namespace rehlds::common;
 using namespace rehlds::dedicated;
@@ -98,7 +95,7 @@ namespace
             filestream.open(pidfile, std::ios_base::out | std::ios_base::trunc);
 
             if (filestream.good() && filestream.is_open()) {
-                filestream << get_pid() << '\n';
+                filestream << cpputils::get_pid() << '\n';
                 filestream.close();
             }
             else {
@@ -138,11 +135,7 @@ namespace
             switch (std::strtol(pingboost.c_str(), nullptr, 10)) {
 #ifdef _WIN32
             case 4: {
-                ::ULONG actual_resolution{};
-                auto* const handle_ntdll = load_module<::HMODULE>("ntdll.dll");
-                delay_execution = get_proc_address<NtDelayExecution>(handle_ntdll, "NtDelayExecution");
-                set_timer_resolution = get_proc_address<ZwSetTimerResolution>(handle_ntdll, "ZwSetTimerResolution");
-                set_timer_resolution(1, TRUE, &actual_resolution);
+                cpputils::set_timer_resolution(1);
                 sys_sleep = &sleep_delay_execution;
                 break;
             }
@@ -152,12 +145,27 @@ namespace
                 sys_sleep = &sleep_timer;
                 break;
             }
-            case 2: sys_sleep = &sleep_poll; break;
-            case 4: sys_sleep = &sleep_thread_microsecond; break;
+            case 2: {
+                sys_sleep = &sleep_poll;
+                break;
+            }
+            case 4: {
+                sys_sleep = &sleep_thread_microsecond;
+                break;
+            }
 #endif
-            case 3: sys_sleep = &sleep_net; break;
-            case 5: sys_sleep = &thread_yield; break;
-            default: sys_sleep = &sleep_thread_millisecond; break;
+            case 3: {
+                sys_sleep = &sleep_net;
+                break;
+            }
+            case 5: {
+                sys_sleep = &thread_yield;
+                break;
+            }
+            default: {
+                sys_sleep = &sleep_thread_millisecond;
+                break;
+            }
             }
         }
     }

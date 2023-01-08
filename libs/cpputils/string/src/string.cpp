@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 the_hunter
+ *  Copyright (C) 2023 the_hunter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "strtools/string.h"
+#include "cpputils/string.h"
 #include <type_traits>
 #include <cctype>
 #include <cmath>
@@ -101,7 +101,7 @@ namespace
 
     constexpr auto* TRIM_SPACES = +[](const std::string_view str) noexcept
     {
-        return strtools::trim(str);
+        return cpputils::trim(str);
     };
 
     template <typename Container>
@@ -125,7 +125,7 @@ namespace
         }
 
         if constexpr (std::is_same_v<Value, std::string::value_type>) {
-            if ((strtools::EOS == value) || (start >= end)) {
+            if ((cpputils::EOS == value) || (start >= end)) {
                 return std::string::npos;
             }
         }
@@ -153,7 +153,7 @@ namespace
             end = str.length();
         }
 
-        if ((strtools::EOS == value) || (start >= end)) {
+        if ((cpputils::EOS == value) || (start >= end)) {
             return std::string::npos;
         }
 
@@ -163,7 +163,7 @@ namespace
 
         const auto is_chars_equal_ignore_case = [value](const std::string_view::value_type ch)
         {
-            return strtools::equal_ignore_case(ch, value);
+            return cpputils::equal_ignore_case(ch, value);
         };
 
         if (reverse) {
@@ -218,17 +218,17 @@ namespace
 
     std::vector<std::string> split_by_spaces(std::string_view str, std::size_t max_split)
     {
-        if (strtools::is_empty_or_whitespace(str)) {
+        if (cpputils::is_empty_or_whitespace(str)) {
             return {};
         }
 
         std::vector<std::string> result{}; // -V826
         std::size_t pos;                   // NOLINT(cppcoreguidelines-init-variables)
 
-        while ((pos = str.find_first_of(strtools::SPACE_CHARACTERS)) != std::string_view::npos) {
-            const auto prefix_len = str.find_first_not_of(strtools::SPACE_CHARACTERS, pos);
+        while ((pos = str.find_first_of(cpputils::SPACE_CHARACTERS)) != std::string_view::npos) {
+            const auto prefix_len = str.find_first_not_of(cpputils::SPACE_CHARACTERS, pos);
 
-            if (const auto token = str.substr(0, pos); !strtools::is_empty_or_whitespace(token)) {
+            if (const auto token = str.substr(0, pos); !cpputils::is_empty_or_whitespace(token)) {
                 result.emplace_back(token);
 
                 if (--max_split; (0 == max_split) || (std::string_view::npos == prefix_len)) {
@@ -240,7 +240,7 @@ namespace
             str.remove_prefix(prefix_len);
         }
 
-        if (!strtools::is_empty_or_whitespace(str)) {
+        if (!cpputils::is_empty_or_whitespace(str)) {
             result.emplace_back(str);
         }
 
@@ -268,15 +268,15 @@ namespace
 
     std::vector<std::string> rsplit_by_spaces(std::string_view str, std::size_t max_split)
     {
-        if (strtools::is_empty_or_whitespace(str)) {
+        if (cpputils::is_empty_or_whitespace(str)) {
             return {};
         }
 
         std::vector<std::string> result{}; // -V826
         std::size_t pos;                   // NOLINT(cppcoreguidelines-init-variables)
 
-        while ((pos = str.find_last_of(strtools::SPACE_CHARACTERS)) != std::string_view::npos) {
-            const auto token_pos = str.find_first_not_of(strtools::SPACE_CHARACTERS, pos);
+        while ((pos = str.find_last_of(cpputils::SPACE_CHARACTERS)) != std::string_view::npos) {
+            const auto token_pos = str.find_first_not_of(cpputils::SPACE_CHARACTERS, pos);
 
             if (std::string_view::npos == token_pos) {
                 str = str.substr(0, pos);
@@ -294,7 +294,7 @@ namespace
             str = str.substr(0, pos);
         }
 
-        if (!strtools::is_empty_or_whitespace(str)) {
+        if (!cpputils::is_empty_or_whitespace(str)) {
             result.emplace(result.begin(), str);
         }
 
@@ -302,7 +302,7 @@ namespace
     }
 
     std::vector<std::string> split(const std::string_view str, const std::string_view delimiter,
-      const strtools::StringSplitOptions options, const std::size_t max_split, const bool reverse)
+      const cpputils::StringSplitOptions options, const std::size_t max_split, const bool reverse)
     {
         std::vector<std::string> result{}; // -V826
 
@@ -320,18 +320,18 @@ namespace
         }
 
         switch (options) {
-        case strtools::StringSplitOptions::none: {
+        case cpputils::StringSplitOptions::none: {
             break;
         }
-        case strtools::StringSplitOptions::trim_entries: {
+        case cpputils::StringSplitOptions::trim_entries: {
             trim_entries(result);
             break;
         }
-        case strtools::StringSplitOptions::remove_empty_entries: {
+        case cpputils::StringSplitOptions::remove_empty_entries: {
             remove_empty_entries(result);
             break;
         }
-        case strtools::StringSplitOptions::trim_remove_empty_entries: {
+        case cpputils::StringSplitOptions::trim_remove_empty_entries: {
             trim_entries(result);
             remove_empty_entries(result);
             break;
@@ -364,16 +364,16 @@ namespace
         const auto ignore_case = STARTS_WITH_IGNORE_CASE == (flags & STARTS_WITH_IGNORE_CASE);
 
         if (reverse) {
-            return ignore_case ? strtools::ends_with_ignore_case(std::string{str}, std::string{value})
+            return ignore_case ? cpputils::ends_with_ignore_case(std::string{str}, std::string{value})
                                : std::equal(value.crbegin(), value.crend(), str.crbegin());
         }
 
-        return ignore_case ? strtools::starts_with_ignore_case(std::string{str}, std::string{value})
+        return ignore_case ? cpputils::starts_with_ignore_case(std::string{str}, std::string{value})
                            : std::equal(value.cbegin(), value.cend(), str.cbegin());
     }
 }
 
-namespace strtools
+namespace cpputils
 {
     std::string capitalize(const std::string_view str) noexcept
     {

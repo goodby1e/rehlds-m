@@ -13,6 +13,7 @@ namespace rehlds::dedicated
         friend TextConsole& TextConsole::instance();
 
       public:
+        TextConsoleWindows();
         TextConsoleWindows(TextConsoleWindows&&) = delete;
         TextConsoleWindows(const TextConsoleWindows&) = delete;
         TextConsoleWindows& operator=(TextConsoleWindows&&) = delete;
@@ -25,8 +26,5 @@ namespace rehlds::dedicated
         [[nodiscard]] int width() const override;
         void set_title(const std::string& title) override;
         void set_status(std::string status) override;
-
-      private:
-        TextConsoleWindows();
     };
 }

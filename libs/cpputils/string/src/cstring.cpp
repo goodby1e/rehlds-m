@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 the_hunter
+ *  Copyright (C) 2023 the_hunter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "strtools/cstring.h"
+#include "cpputils/cstring.h"
 
 #ifdef _WIN32
   #include <Shlwapi.h>
@@ -35,7 +35,7 @@ namespace
             end = str_len;
         }
 
-        if ((*value != strtools::EOS) && (start < end)) {
+        if ((*value != cpputils::EOS) && (start < end)) {
 #ifdef _WIN32
             auto* const result = ignore_case ? ::StrStrI(str + start, value) : std::strstr(str + start, value);
 #else
@@ -72,7 +72,7 @@ namespace
     }
 }
 
-namespace strtools
+namespace cpputils
 {
     char* find(char* const str, const char* const value, const std::size_t start, const std::size_t end) noexcept
     {

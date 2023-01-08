@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 the_hunter
+ *  Copyright (C) 2023 the_hunter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "strtools/const.h"
-#include "strtools/cstring.h"
+#include "cpputils/cstring.h"
+#include "cpputils/string_const.h"
 #include <algorithm>
 #include <iterator>
 #include <sstream>
@@ -26,7 +26,7 @@
 #include <tuple>
 #include <vector>
 
-namespace strtools
+namespace cpputils
 {
     enum class StringSplitOptions
     {

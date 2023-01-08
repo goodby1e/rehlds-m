@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 the_hunter
+ *  Copyright (C) 2023 the_hunter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "strtools/string.h"
+#include "cpputils/string.h"
 #include <gtest/gtest.h>
 #include <array>
 
@@ -24,7 +24,7 @@
   #define strncasecmp _strnicmp
 #endif
 
-namespace strtools::test
+namespace cpputils::test
 {
     TEST(String, Capitalize)
     {

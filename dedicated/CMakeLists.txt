@@ -40,8 +40,9 @@ target_include_directories(${PROJECT_NAME_INTERFACE} INTERFACE
 )
 
 target_link_libraries(${PROJECT_NAME_INTERFACE} INTERFACE
-  StrTools::strtools
-  StrFormat::strformat
+  CppUtils::singleton
+  CppUtils::string
+  CppUtils::system
   ReHLDS::common
 
   # Windows

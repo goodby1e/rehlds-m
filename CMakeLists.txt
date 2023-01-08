@@ -82,7 +82,6 @@ include(UnitTests)
 include(CodeAnalysis)
 include(${CMAKE_HOST_SYSTEM_NAME})
 
-add_subdirectory("libs/strtools")
-add_subdirectory("libs/strformat")
+add_subdirectory("libs/cpputils")
 add_subdirectory("common")
 add_subdirectory("dedicated")

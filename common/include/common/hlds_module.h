@@ -6,10 +6,10 @@
 
 #include "common/interface.h"
 #include "common/interfaces/system_base.h"
-#include "common/system.h"
+#include "cpputils/singleton_holder.h"
+#include "cpputils/system.h"
 #include <unordered_map>
 #include <cassert>
-#include <memory>
 #include <string>
 #include <utility>
 
@@ -100,7 +100,7 @@ namespace rehlds::common
         const std::string name_;
 
         /* Module handle. */
-        SysModule* handle_{};
+        cpputils::SysModule* handle_{};
 
         /* Cached interfaces map. */
         std::unordered_map<std::string, IBaseInterface*> interfaces_{};
@@ -128,7 +128,7 @@ namespace rehlds::common
         }
 
         interfaces_.clear();
-        handle_ = load_module(name_.c_str());
+        handle_ = cpputils::load_module(name_.c_str());
 
         return is_loaded();
     }
@@ -149,7 +149,7 @@ namespace rehlds::common
     template <typename T>
     T HldsModule::get_proc_address(const std::string& procedure) noexcept
     {
-        return load() ? common::get_proc_address<T>(handle_, procedure) : nullptr;
+        return load() ? cpputils::get_proc_address<T>(handle_, procedure) : nullptr;
     }
 
     template <typename T>
@@ -226,8 +226,7 @@ namespace rehlds::common
      */
     [[nodiscard]] inline HldsEngineModule& get_engine_module()
     {
-        static const auto instance = std::make_unique<HldsEngineModule>(ENGINE_MODULE_FILE);
-        return *instance;
+        return cpputils::SingletonHolder<HldsEngineModule>::get_instance(ENGINE_MODULE_FILE);
     }
 
     /**
@@ -235,8 +234,7 @@ namespace rehlds::common
      */
     [[nodiscard]] inline HldsModule& get_game_module()
     {
-        static const auto instance = std::make_unique<HldsModule>(GAME_MODULE_FILE);
-        return *instance;
+        return cpputils::SingletonHolder<HldsModule>::get_instance(GAME_MODULE_FILE);
     }
 
     /**
@@ -244,7 +242,6 @@ namespace rehlds::common
      */
     [[nodiscard]] inline HldsModule& get_filesystem_module()
     {
-        static const auto instance = std::make_unique<HldsModule>(FILESYSTEM_MODULE_FILE);
-        return *instance;
+        return cpputils::SingletonHolder<HldsModule>::get_instance(FILESYSTEM_MODULE_FILE);
     }
 }

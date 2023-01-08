@@ -31,11 +31,6 @@
 namespace rehlds::common
 {
     /**
-     * @brief Opaque handle to the module.
-     */
-    class SysModule;
-
-    /**
      * @brief Name of the interface factory function.
      */
     constexpr auto* CREATE_INTERFACE_PROC_NAME = "CreateInterface";

@@ -3,6 +3,7 @@
  */
 
 #include "console/text_console_unix.h"
+#include "cpputils/singleton_holder.h"
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #include <array>
@@ -12,7 +13,6 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <memory>
 #include <streambuf>
 #include <termios.h>
 #include <unistd.h>
@@ -94,8 +94,7 @@ namespace rehlds::dedicated
 {
     TextConsole& TextConsole::instance()
     {
-        static const auto instance = std::unique_ptr<TextConsoleUnix>{new TextConsoleUnix{}}; //-V824
-        return *instance;
+        return cpputils::SingletonHolder<TextConsoleUnix>::get_instance();
     }
 
     TextConsoleUnix::~TextConsoleUnix()

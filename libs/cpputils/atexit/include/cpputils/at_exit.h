@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 the_hunter
+ *  Copyright (C) 2023 the_hunter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,28 +17,15 @@
 
 #pragma once
 
-#include <fmt/core.h>
-#include <cstdio>
-#include <string>
-#include <utility>
+#include <functional>
 
-namespace strformat
+namespace cpputils
 {
-    template <typename... Args>
-    std::string format(std::string format, Args&&... args)
-    {
-        return fmt::format(std::move(format), std::forward<Args>(args)...);
-    }
-
-    template <typename... Args>
-    void print(std::string format, Args&&... args)
-    {
-        fmt::print(std::move(format), std::forward<Args>(args)...);
-    }
-
-    template <typename... Args>
-    void print(std::FILE* const file, std::string format, Args&&... args)
-    {
-        fmt::print(file, std::move(format), std::forward<Args>(args)...);
-    }
+    /**
+     * @brief Registers the callback to be called on normal and quick program termination
+     * (via \c std::exit(), \c std::quick_exit() or returning from the main function).
+     *
+     * @param callback Lambda to be called on normal program termination.
+     */
+    void at_exit(std::function<void()> callback);
 }

@@ -5,7 +5,7 @@
 #include "console/text_console.h"
 #include "common/hlds_module.h"
 #include "common/interfaces/dedicated_serverapi.h"
-#include "strtools/string.h"
+#include "cpputils/string.h"
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -85,7 +85,7 @@ namespace rehlds::dedicated
         std::array<char, 32> map_name{};
         engine_api->update_status(&fps, &active_players, &maximum_players, map_name.data());
 
-        const auto status = strformat::format(
+        const auto status = cpputils::format(
           "FPS: {:.1f} | Players: {:d}/{:d} | Map: {}", fps, active_players, maximum_players, map_name.data());
 
         set_status(status);
@@ -292,7 +292,7 @@ namespace rehlds::dedicated
         std::cout << '\n';
 
         std::string common{smallest};
-        common = strtools::lower(common);
+        common = cpputils::lower(common);
 
         const auto total_columns = static_cast<std::size_t>(width() - 1) / (longest.length() + 1);
         std::size_t current_column = 0;
@@ -306,8 +306,8 @@ namespace rehlds::dedicated
             }
 
             std::string command{static_cast<const char*>(match)};
-            command = strtools::lower(command);
-            std::cout << strformat::format("{:<{}}  ", command, longest.length());
+            command = cpputils::lower(command);
+            std::cout << cpputils::format("{:<{}}  ", command, longest.length());
 
             const auto& [mismatch1, mismatch2] = std::mismatch(common.cbegin(), common.cend(), command.cbegin());
             common.erase(mismatch1, common.cend());

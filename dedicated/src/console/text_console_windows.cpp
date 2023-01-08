@@ -6,10 +6,10 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "console/text_console_windows.h"
+#include "cpputils/singleton_holder.h"
 #include <array>
 #include <chrono>
 #include <iostream>
-#include <memory>
 #include <vector>
 #include <Windows.h>
 
@@ -35,8 +35,7 @@ namespace rehlds::dedicated
 {
     TextConsole& TextConsole::instance()
     {
-        static const auto instance = std::unique_ptr<TextConsoleWindows>{new TextConsoleWindows{}}; //-V824
-        return *instance;
+        return cpputils::SingletonHolder<TextConsoleWindows>::get_instance();
     }
 
     TextConsoleWindows::TextConsoleWindows()

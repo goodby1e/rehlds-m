@@ -15,10 +15,8 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 )
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
-  $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:
-    ${CMAKE_DL_LIBS}
-    c
-  >
+  CppUtils::singleton
+  CppUtils::system
 )
 
 target_sources(${PROJECT_NAME} INTERFACE
@@ -33,10 +31,8 @@ target_sources(${PROJECT_NAME} INTERFACE
   "include/common/object_container.h"
   "include/common/object_list.h"
   "include/common/platform.h"
-  "include/common/system.h"
   "src/interface.cpp"
   "src/object_list.cpp"
-  "src/system.cpp"
 )
 
 setup_unit_tests("${PROJECT_NAME}_tests" LIBRARIES ReHLDS::${PROJECT_NAME} SOURCES

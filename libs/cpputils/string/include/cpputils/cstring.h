@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 the_hunter
+ *  Copyright (C) 2023 the_hunter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "strtools/const.h"
+#include "cpputils/string_const.h"
 #include <cassert>
 #include <cctype>
 #include <climits>
 #include <cstddef>
 #include <cstring>
 
-namespace strtools
+namespace cpputils
 {
     /**
      * @brief Compares two strings lexicographically (case insensitive).

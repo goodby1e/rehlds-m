@@ -47,18 +47,10 @@ namespace rehlds::dedicated
 }
 
 #ifdef _WIN32
-  #include <bcrypt.h>
+  #include "cpputils/system.h"
 
 namespace rehlds::dedicated
 {
-    using ZwSetTimerResolution = ::NTSTATUS(__stdcall*)(
-      ::ULONG requested_resolution, ::BOOLEAN set, ::PULONG actual_resolution);
-
-    using NtDelayExecution = ::NTSTATUS(__stdcall*)(::BOOL alertable, ::PLARGE_INTEGER delay_interval);
-
-    inline ZwSetTimerResolution set_timer_resolution{};
-    inline NtDelayExecution delay_execution{};
-
     /**
      * @brief -pingboost 4
      */
@@ -66,7 +58,7 @@ namespace rehlds::dedicated
     {
         ::LARGE_INTEGER interval;
         interval.QuadPart = -1LL;
-        delay_execution(FALSE, &interval);
+        cpputils::delay_execution(FALSE, &interval);
     }
 }
 #else

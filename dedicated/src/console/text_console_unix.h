@@ -13,6 +13,7 @@ namespace rehlds::dedicated
         friend TextConsole& TextConsole::instance();
 
       public:
+        TextConsoleUnix() = default;
         TextConsoleUnix(TextConsoleUnix&&) = delete;
         TextConsoleUnix(const TextConsoleUnix&) = delete;
         TextConsoleUnix& operator=(TextConsoleUnix&&) = delete;
@@ -25,8 +26,5 @@ namespace rehlds::dedicated
         [[nodiscard]] int width() const override;
         void set_title(const std::string& title) override;
         void set_status(std::string status) override;
-
-      private:
-        TextConsoleUnix() = default;
     };
 }
