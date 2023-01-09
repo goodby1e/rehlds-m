@@ -31,8 +31,6 @@ jobs:
             cmake_test_preset: 'windows-all',
             cmake_build_preset: 'x86-windows-tests',
             build_environment: 'call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsamd64_x86.bat"',
-            boost_url: 'https://boostorg.jfrog.io/artifactory/main/release/1.80.0/binaries/boost_1_80_0-msvc-14.3-32.exe',
-            boost_dir: 'C:\Program Files\Boost\boost_1_80_0',
             shell: cmd
           }
         - {
@@ -54,22 +52,6 @@ jobs:
       uses: actions/checkout@v3
       with:
         submodules: recursive
-
-    - name: Download boost c++ libraries
-      if: ${{ matrix.config.os == 'windows-latest' }}
-      run: |
-        $boost_url = "${{ matrix.config.boost_url }}"
-        $boost_exe = Split-Path $boost_url -Leaf
-        Invoke-WebRequest $boost_url -OutFile $boost_exe
-      shell: pwsh
-
-    - name: Install boost c++ libraries
-      if: ${{ matrix.config.os == 'windows-latest' }}
-      run: |
-        $boost_exe = Split-Path "${{ matrix.config.boost_url }}" -Leaf
-        $args = @("/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/SP-","/DIR=""${{ matrix.config.boost_dir }}""")
-        Start-Process -Filepath $boost_exe -ArgumentList $args
-      shell: pwsh
 
     - name: Build
       run: |
