@@ -3,19 +3,16 @@
  */
 
 #include "dedicated.h"
+#include "arguments.h"
 #include "command_line.h"
 #include "common/hlds_module.h"
 #include "common/interfaces/dedicated_serverapi.h"
 #include "common/interfaces/filesystem.h"
 #include "common/platform.h"
 #include "console/text_console.h"
-#include "cpputils/system.h"
 #include "sleep.h"
 #include <cassert>
-#include <csignal>
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
+#include <string>
 
 using namespace rehlds::common;
 using namespace rehlds::dedicated;
@@ -88,88 +85,6 @@ namespace
         return true;
     }
 
-    void process_param_pidfile(const CommandLine& cmdline)
-    {
-        if (std::string pidfile{}; cmdline.find_param("-pidfile", pidfile) && (!pidfile.empty())) {
-            std::ofstream filestream{};
-            filestream.open(pidfile, std::ios_base::out | std::ios_base::trunc);
-
-            if (filestream.good() && filestream.is_open()) {
-                filestream << cpputils::get_pid() << '\n';
-                filestream.close();
-            }
-            else {
-                TextConsole::print("Warning: unable to open PID file ({})\n", pidfile);
-            }
-        }
-    }
-
-    void process_param_conclearlog(const CommandLine& cmdline)
-    {
-        if (cmdline.find_param("[-\\+]condebug") && cmdline.find_param("-conclearlog")) {
-#ifdef _WIN32
-            std::error_code error_code{};
-            std::filesystem::remove("qconsole.log", error_code);
-#else
-            if (std::string game{}; cmdline.find_param("-game", game) && (!game.empty())) {
-                std::error_code error_code{};
-                std::filesystem::remove(game + "/qconsole.log", error_code);
-            }
-#endif
-        }
-    }
-
-    void process_param_ignoresigint(const CommandLine& cmdline)
-    {
-        if (cmdline.find_param("-ignoresigint") && (SIG_ERR == std::signal(SIGINT, SIG_IGN))) {
-            TextConsole::print("WARNING! -ignoresigint: Failed to set signal handler.\n");
-        }
-    }
-
-    void process_param_pingboost(const CommandLine& cmdline, HldsModule& engine_module)
-    {
-        sys_sleep = &sleep_thread_millisecond;
-        net_sleep = engine_module.get_proc_address<NetSleep>("NET_Sleep_Timeout");
-
-        if (std::string pingboost{}; cmdline.find_param("-pingboost", pingboost) && (!pingboost.empty())) {
-            switch (std::strtol(pingboost.c_str(), nullptr, 10)) {
-#ifdef _WIN32
-                case 4: {
-                    cpputils::set_timer_resolution(1);
-                    sys_sleep = &sleep_delay_execution;
-                    break;
-                }
-#else
-                case 1: {
-                    std::signal(SIGALRM, &sigalrm_handler);
-                    sys_sleep = &sleep_timer;
-                    break;
-                }
-                case 2: {
-                    sys_sleep = &sleep_poll;
-                    break;
-                }
-                case 4: {
-                    sys_sleep = &sleep_thread_microsecond;
-                    break;
-                }
-#endif
-                case 3: {
-                    sys_sleep = &sleep_net;
-                    break;
-                }
-                case 5: {
-                    sys_sleep = &thread_yield;
-                    break;
-                }
-                default: {
-                    sys_sleep = &sleep_thread_millisecond;
-                    break;
-                }
-            }
-        }
-    }
-
     /**
      * @brief Server loop.
      */
@@ -215,10 +130,7 @@ namespace rehlds::dedicated
 
         filesystem->mount();
         init_cmdline(cmdline);
-        process_param_pidfile(cmdline);
-        process_param_conclearlog(cmdline);
-        process_param_ignoresigint(cmdline);
-        process_param_pingboost(cmdline, engine_module);
+        process_cmdline_arguments(cmdline);
 
         auto* const launcher_factory = get_factory_this();
         auto* const filesystem_factory = filesystem_module.get_factory();

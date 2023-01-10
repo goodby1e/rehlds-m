@@ -12,13 +12,15 @@ project(${PROJECT_NAME} DESCRIPTION "${PROJECT_DESCRIPTION}")
 add_library(${PROJECT_NAME_INTERFACE} INTERFACE)
 
 target_sources(${PROJECT_NAME_INTERFACE} INTERFACE
+  "src/arguments.cpp"
+  "src/arguments.h"
   "src/command_line.cpp"
   "src/command_line.h"
   "src/console/text_console.cpp"
   "src/console/text_console.h"
-  "src/dedicated_exports.cpp"
   "src/dedicated.cpp"
   "src/dedicated.h"
+  "src/dedicated_exports.cpp"
   "src/sleep.h"
 
   # Platform Windows
