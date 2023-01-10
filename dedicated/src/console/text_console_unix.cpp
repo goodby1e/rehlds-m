@@ -150,25 +150,25 @@ namespace rehlds::dedicated
 
         while (keyboard_hit() && (::read(STDIN_FILENO, &character, 1) > 0)) {
             switch (character) {
-            case '\n': {
-                text = console_text();
-                receive_newline();
-                return true;
-            }
-
-            case '\x1B': {
-                if (std::array<std::string::value_type, 3> sequence{'\x1B', '\0', '\0'};
-                    ::read(STDIN_FILENO, &sequence[1], sequence.size() - 1) > 0) {
-                    receive_escape_sequence(sequence);
+                case '\n': {
+                    text = console_text();
+                    receive_newline();
+                    return true;
                 }
-                break;
-            }
 
-            case 127:
-            case '\b': receive_backspace(); break;
-            case '\t': receive_tab(); break;
-            case '\0': continue;
-            default: receive_character(character); break;
+                case '\x1B': {
+                    if (std::array<std::string::value_type, 3> sequence{'\x1B', '\0', '\0'};
+                        ::read(STDIN_FILENO, &sequence[1], sequence.size() - 1) > 0) {
+                        receive_escape_sequence(sequence);
+                    }
+                    break;
+                }
+
+                case 127:
+                case '\b': receive_backspace(); break;
+                case '\t': receive_tab(); break;
+                case '\0': continue;
+                default: receive_character(character); break;
             }
         }
 

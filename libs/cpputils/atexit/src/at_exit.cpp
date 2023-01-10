@@ -47,7 +47,7 @@ namespace cpputils
             at_exit_callbacks = std::make_unique<std::stack<std::function<void()>>>();
 
             // NOLINTNEXTLINE(cert-err33-c)
-            std::atexit(RUN_EXIT_CALLBACKS);        // cppcheck-suppress ignoredReturnValue
+            std::atexit(RUN_EXIT_CALLBACKS); // cppcheck-suppress ignoredReturnValue
 
             // NOLINTNEXTLINE(cert-err33-c)
             std::at_quick_exit(RUN_EXIT_CALLBACKS); // cppcheck-suppress ignoredReturnValue

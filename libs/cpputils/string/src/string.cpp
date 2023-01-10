@@ -320,22 +320,22 @@ namespace
         }
 
         switch (options) {
-        case cpputils::StringSplitOptions::none: {
-            break;
-        }
-        case cpputils::StringSplitOptions::trim_entries: {
-            trim_entries(result);
-            break;
-        }
-        case cpputils::StringSplitOptions::remove_empty_entries: {
-            remove_empty_entries(result);
-            break;
-        }
-        case cpputils::StringSplitOptions::trim_remove_empty_entries: {
-            trim_entries(result);
-            remove_empty_entries(result);
-            break;
-        }
+            case cpputils::StringSplitOptions::none: {
+                break;
+            }
+            case cpputils::StringSplitOptions::trim_entries: {
+                trim_entries(result);
+                break;
+            }
+            case cpputils::StringSplitOptions::remove_empty_entries: {
+                remove_empty_entries(result);
+                break;
+            }
+            case cpputils::StringSplitOptions::trim_remove_empty_entries: {
+                trim_entries(result);
+                remove_empty_entries(result);
+                break;
+            }
         }
 
         return result;

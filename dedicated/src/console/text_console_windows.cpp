@@ -104,22 +104,22 @@ namespace rehlds::dedicated
             }
 
             switch (key_code) {
-            case VK_BACK: receive_backspace(); continue;
-            case VK_TAB: receive_tab(); continue;
-            case VK_UP: receive_up_arrow(); continue;
-            case VK_DOWN: receive_down_arrow(); continue;
-            case VK_LEFT: receive_left_arrow(); continue;
-            case VK_RIGHT: receive_right_arrow(); continue;
-            case VK_HOME: receive_home(); continue;
-            case VK_END: receive_end(); continue;
-            default: break;
+                case VK_BACK: receive_backspace(); continue;
+                case VK_TAB: receive_tab(); continue;
+                case VK_UP: receive_up_arrow(); continue;
+                case VK_DOWN: receive_down_arrow(); continue;
+                case VK_LEFT: receive_left_arrow(); continue;
+                case VK_RIGHT: receive_right_arrow(); continue;
+                case VK_HOME: receive_home(); continue;
+                case VK_END: receive_end(); continue;
+                default: break;
             }
 
             switch (character) {
-            case '\t': receive_tab(); break;
-            case '\b':
-            case 127: receive_backspace(); break;
-            default: receive_character(character); break;
+                case '\t': receive_tab(); break;
+                case '\b':
+                case 127: receive_backspace(); break;
+                default: receive_character(character); break;
             }
         }
 

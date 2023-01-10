@@ -134,38 +134,38 @@ namespace
         if (std::string pingboost{}; cmdline.find_param("-pingboost", pingboost) && (!pingboost.empty())) {
             switch (std::strtol(pingboost.c_str(), nullptr, 10)) {
 #ifdef _WIN32
-            case 4: {
-                cpputils::set_timer_resolution(1);
-                sys_sleep = &sleep_delay_execution;
-                break;
-            }
+                case 4: {
+                    cpputils::set_timer_resolution(1);
+                    sys_sleep = &sleep_delay_execution;
+                    break;
+                }
 #else
-            case 1: {
-                std::signal(SIGALRM, &sigalrm_handler);
-                sys_sleep = &sleep_timer;
-                break;
-            }
-            case 2: {
-                sys_sleep = &sleep_poll;
-                break;
-            }
-            case 4: {
-                sys_sleep = &sleep_thread_microsecond;
-                break;
-            }
+                case 1: {
+                    std::signal(SIGALRM, &sigalrm_handler);
+                    sys_sleep = &sleep_timer;
+                    break;
+                }
+                case 2: {
+                    sys_sleep = &sleep_poll;
+                    break;
+                }
+                case 4: {
+                    sys_sleep = &sleep_thread_microsecond;
+                    break;
+                }
 #endif
-            case 3: {
-                sys_sleep = &sleep_net;
-                break;
-            }
-            case 5: {
-                sys_sleep = &thread_yield;
-                break;
-            }
-            default: {
-                sys_sleep = &sleep_thread_millisecond;
-                break;
-            }
+                case 3: {
+                    sys_sleep = &sleep_net;
+                    break;
+                }
+                case 5: {
+                    sys_sleep = &thread_yield;
+                    break;
+                }
+                default: {
+                    sys_sleep = &sleep_thread_millisecond;
+                    break;
+                }
             }
         }
     }

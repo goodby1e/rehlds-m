@@ -238,13 +238,13 @@ namespace rehlds::dedicated
     void TextConsole::receive_escape_sequence(const std::array<std::string::value_type, 3>& sequence)
     {
         switch (sequence[2]) {
-        case 'A': receive_up_arrow(); break;
-        case 'B': receive_down_arrow(); break;
-        case 'C': receive_right_arrow(); break;
-        case 'D': receive_left_arrow(); break;
-        case 'F': receive_end(); break;
-        case 'H': receive_home(); break;
-        default: break;
+            case 'A': receive_up_arrow(); break;
+            case 'B': receive_down_arrow(); break;
+            case 'C': receive_right_arrow(); break;
+            case 'D': receive_left_arrow(); break;
+            case 'F': receive_end(); break;
+            case 'H': receive_home(); break;
+            default: break;
         }
     }
 
