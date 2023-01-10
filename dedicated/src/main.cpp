@@ -6,6 +6,34 @@
 #include "dedicated.h"
 #include <clocale>
 
+namespace
+{
+    void set_locale()
+    {
+#ifdef _WIN32
+        constexpr auto* locale = ".UTF-8";
+#else
+        constexpr auto* locale = "C.UTF-8";
+#endif
+        // NOLINTNEXTLINE(concurrency-mt-unsafe)
+        if (nullptr == std::setlocale(LC_ALL, locale)) {
+            rehlds::dedicated::TextConsole::print("WARNING! Could not set locale.\n");
+        }
+    }
+
+    [[nodiscard]] rehlds::dedicated::CommandLine create_cmdline(const int argc, const char* const* argv)
+    {
+        rehlds::dedicated::CommandLine cmdline{argc, argv};
+
+#ifdef _WIN32
+        cmdline.set_param("-console");
+#endif
+        cmdline.set_param("-steam");
+
+        return cmdline;
+    }
+}
+
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN // NOLINT(clang-diagnostic-unused-macros)
   #include <Windows.h>
@@ -16,10 +44,7 @@
  */
 int main(const int argc, const char* const argv[])
 {
-    // NOLINTNEXTLINE(concurrency-mt-unsafe)
-    if (nullptr == std::setlocale(LC_ALL, ".UTF-8")) {
-        rehlds::dedicated::TextConsole::print("WARNING! Could not set locale.\n");
-    }
+    set_locale();
 
     constexpr auto version = MAKEWORD(2, 2);
     ::WSADATA data{};
@@ -29,9 +54,7 @@ int main(const int argc, const char* const argv[])
         return -1;
     }
 
-    auto& cmdline = rehlds::dedicated::CommandLine::instance();
-    cmdline.create(argc, argv);
-
+    const auto cmdline = create_cmdline(argc, argv);
     const auto exit_code = start_hlds(cmdline);
     ::WSACleanup();
 
@@ -43,13 +66,8 @@ int main(const int argc, const char* const argv[])
  */
 int main(const int argc, const char* const argv[])
 {
-    // NOLINTNEXTLINE(concurrency-mt-unsafe)
-    if (nullptr == std::setlocale(LC_ALL, "C.UTF-8")) {
-        rehlds::dedicated::TextConsole::print("WARNING! Could not set locale.\n");
-    }
-
-    auto& cmdline = rehlds::dedicated::CommandLine::instance();
-    cmdline.create(argc, argv);
+    set_locale();
+    const auto cmdline = create_cmdline(argc, argv);
 
     return start_hlds(cmdline);
 }

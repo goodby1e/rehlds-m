@@ -87,6 +87,11 @@ namespace
 
 namespace rehlds::dedicated
 {
+    CommandLine::CommandLine(const int argc, const char* const* argv)
+    {
+        create(argc, argv);
+    }
+
     void CommandLine::create(std::string cmdline)
     {
         cmdline_.clear();

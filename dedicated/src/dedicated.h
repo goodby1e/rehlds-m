@@ -11,5 +11,5 @@ namespace rehlds::dedicated
     /**
      * @brief Main entry point for dedicated server, shared between win32 and linux.
      */
-    int start_hlds(CommandLine& cmdline);
+    int start_hlds(const CommandLine& cmdline);
 }

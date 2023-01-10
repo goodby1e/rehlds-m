@@ -12,6 +12,8 @@ namespace rehlds::dedicated::test
 {
     class CommandLineTest : public testing::Test
     {
+        CommandLine cmdline_{};
+
       public:
         static void SetUpTestSuite()
         {
@@ -36,22 +38,26 @@ namespace rehlds::dedicated::test
 
         void SetUp() override
         {
-            auto& cmdline = CommandLine::instance();
-            cmdline.create("-game CStrike -insecure -NoIPX -Bots +MaxPlayers 32 +map de_dust2-2x2 +sys_TicRate 1000");
+            cmdline_.create("-game CStrike -insecure -NoIPX -Bots +MaxPlayers 32 +map de_dust2-2x2 +sys_TicRate 1000");
+        }
+
+        CommandLine& get_cmdline()
+        {
+            return cmdline_;
         }
     };
 
     TEST_F(CommandLineTest, CurrentCmdlineReturnValue)
     {
         for (int i = 0; i < 111; ++i) {
-            const auto& cmdline = CommandLine::instance();
+            const auto& cmdline = get_cmdline();
             ASSERT_FALSE(cmdline.current().empty());
         }
     }
 
     TEST_F(CommandLineTest, CreateFromString)
     {
-        auto& cmdline = CommandLine::instance();
+        auto& cmdline = get_cmdline();
 
         cmdline.create("");
         ASSERT_TRUE(cmdline.current().empty());
@@ -83,7 +89,7 @@ namespace rehlds::dedicated::test
 
     TEST_F(CommandLineTest, CreateFromArguments)
     {
-        auto& cmdline = CommandLine::instance();
+        auto& cmdline = get_cmdline();
 
         constexpr std::array<const char*, 0> args1{};
         cmdline.create(args1.size(), args1.data());
@@ -104,7 +110,7 @@ namespace rehlds::dedicated::test
 
     TEST_F(CommandLineTest, FindParam)
     {
-        const auto& cmdline = CommandLine::instance();
+        const auto& cmdline = get_cmdline();
         std::string values{};
 
         bool found_param = cmdline.find_param("");
@@ -134,7 +140,7 @@ namespace rehlds::dedicated::test
 
     TEST_F(CommandLineTest, RemoveParam)
     {
-        auto& cmdline = CommandLine::instance();
+        auto& cmdline = get_cmdline();
 
         cmdline.remove_param("");
         ASSERT_TRUE("-game CStrike -insecure -NoIPX -Bots +MaxPlayers 32 +map de_dust2-2x2 +sys_TicRate 1000" ==
@@ -165,7 +171,7 @@ namespace rehlds::dedicated::test
 
     TEST_F(CommandLineTest, SetParam)
     {
-        auto& cmdline = CommandLine::instance();
+        auto& cmdline = get_cmdline();
         cmdline.create("");
 
         cmdline.set_param("");

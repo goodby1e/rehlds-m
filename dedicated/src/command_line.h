@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "cpputils/singleton_holder.h"
 #include <regex>
 #include <string>
 #include <utility>
@@ -18,12 +17,14 @@ namespace rehlds::dedicated
     {
       public:
         /**
-         * @brief Returns a pointer to the instance of the CommandLine class.
+         * @brief Default constructor.
          */
-        [[nodiscard]] static CommandLine& instance()
-        {
-            return cpputils::SingletonHolder<CommandLine>::get_instance();
-        }
+        CommandLine() = default;
+
+        /**
+         * @brief Constructor.
+         */
+        CommandLine(int argc, const char* const* argv);
 
         /**
          * @brief Creates a command line from the passed in string.

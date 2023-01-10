@@ -56,14 +56,6 @@ namespace
         return filesystem;
     }
 
-    void init_cmdline(CommandLine& cmdline)
-    {
-#ifdef _WIN32
-        cmdline.set_param("-console");
-#endif
-        cmdline.set_param("-steam");
-    }
-
     bool init_console(TextConsole& console)
     {
         if (!console.init()) {
@@ -112,7 +104,7 @@ namespace
 
 namespace rehlds::dedicated
 {
-    int start_hlds(CommandLine& cmdline)
+    int start_hlds(const CommandLine& cmdline)
     {
         if (!load_modules()) {
             return -1;
@@ -129,7 +121,6 @@ namespace rehlds::dedicated
         }
 
         filesystem->mount();
-        init_cmdline(cmdline);
         process_cmdline_arguments(cmdline);
 
         auto* const launcher_factory = get_factory_this();
